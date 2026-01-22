@@ -47,7 +47,8 @@ const nextConfig = {
                 https://lh3.googleusercontent.com
                 https://flagcdn.com
                 https://i.pinimg.com
-                https://images.unsplash.com;
+                https://images.unsplash.com
+                https://res.cloudinary.com;
             `.replace(/\s{2,}/g, " ").trim(),
           },
         ],
