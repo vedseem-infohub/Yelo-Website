@@ -2,7 +2,7 @@
  * API Configuration
  * Provides the backend API URL with proper fallbacks
  */
-const RENDER_BACKEND_URL = 'https://yelo-backend.onrender.com/api';
+const RENDER_BACKEND_URL = 'https://yelo-backend-r5pu.onrender.com/api';
 const LOCALHOST_BACKEND_URL = 'http://localhost:5000/api';
 
 export const getApiUrl = () => {
