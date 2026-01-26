@@ -76,8 +76,15 @@ export default function AccountPage() {
     fetchRecentOrders();
   }, [backendUser, loading]);
 
-  // Show loading or redirect if no user
-  if (loading) {
+  // Redirect if no user
+  useEffect(() => {
+    if (!loading && !backendUser) {
+      router.push("/");
+    }
+  }, [backendUser, loading, router]);
+
+  // Show loading or while redirecting
+  if (loading || !backendUser) {
     return (
       <PageWrapper>
         <div className="min-h-screen flex items-center justify-center">
@@ -87,10 +94,6 @@ export default function AccountPage() {
     );
   }
 
-  if (!backendUser) {
-    router.push("/");
-    return null;
-  }
 
   return (
     <PageWrapper>

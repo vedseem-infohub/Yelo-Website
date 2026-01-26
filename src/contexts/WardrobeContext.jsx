@@ -22,92 +22,72 @@ export function WardrobeProvider({ children }) {
   const [savedItems, setSavedItems] = useState([])
   const [savedLooks, setSavedLooks] = useState([])
   const [purchasedItems, setPurchasedItems] = useState([])
-  const isInitialMountRef = useRef(true)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  // Helper to get consistent ID from product/item
+  const getItemId = (item) => item?._id || item?.id
 
   // Load wardrobe from localStorage on mount
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     try {
       const savedWardrobe = localStorage.getItem('yelo-wardrobe-items')
       if (savedWardrobe) {
-        const parsed = JSON.parse(savedWardrobe)
-        setSavedItems(parsed)
+        setSavedItems(JSON.parse(savedWardrobe))
       }
-    } catch (error) {
-      console.error('Error loading wardrobe:', error)
-    }
 
-    try {
       const savedLooksData = localStorage.getItem('yelo-wardrobe-looks')
       if (savedLooksData) {
-        const parsed = JSON.parse(savedLooksData)
-        setSavedLooks(parsed)
+        setSavedLooks(JSON.parse(savedLooksData))
       }
-    } catch (error) {
-      console.error('Error loading looks:', error)
-    }
 
-    try {
       const savedPurchased = localStorage.getItem('yelo-purchased-items')
       if (savedPurchased) {
-        const parsed = JSON.parse(savedPurchased)
-        setPurchasedItems(parsed)
+        setPurchasedItems(JSON.parse(savedPurchased))
       }
     } catch (error) {
-      console.error('Error loading purchased items:', error)
+      console.error('Error loading wardrobe data:', error)
+    } finally {
+      setIsLoaded(true)
     }
-
-    isInitialMountRef.current = false
   }, [])
 
-  // Save wardrobe to localStorage whenever it changes
+  // Save data to localStorage whenever it changes
   useEffect(() => {
-    if (isInitialMountRef.current) return
-    
-    try {
-      localStorage.setItem('yelo-wardrobe-items', JSON.stringify(savedItems))
-    } catch (error) {
-      console.error('Error saving wardrobe:', error)
-    }
-  }, [savedItems])
+    if (!isLoaded || typeof window === 'undefined') return
+    localStorage.setItem('yelo-wardrobe-items', JSON.stringify(savedItems))
+  }, [savedItems, isLoaded])
 
-  // Save looks to localStorage whenever it changes
   useEffect(() => {
-    if (isInitialMountRef.current) return
-    
-    try {
-      localStorage.setItem('yelo-wardrobe-looks', JSON.stringify(savedLooks))
-    } catch (error) {
-      console.error('Error saving looks:', error)
-    }
-  }, [savedLooks])
+    if (!isLoaded || typeof window === 'undefined') return
+    localStorage.setItem('yelo-wardrobe-looks', JSON.stringify(savedLooks))
+  }, [savedLooks, isLoaded])
 
-  // Save purchased items to localStorage whenever it changes
   useEffect(() => {
-    if (isInitialMountRef.current) return
-    
-    try {
-      localStorage.setItem('yelo-purchased-items', JSON.stringify(purchasedItems))
-    } catch (error) {
-      console.error('Error saving purchased items:', error)
-    }
-  }, [purchasedItems])
+    if (!isLoaded || typeof window === 'undefined') return
+    localStorage.setItem('yelo-purchased-items', JSON.stringify(purchasedItems))
+  }, [purchasedItems, isLoaded])
 
   const addToWardrobe = (product) => {
+    const productId = getItemId(product)
+    if (!productId) return
+
     setSavedItems((prev) => {
-      const exists = prev.find((item) => item.id === product.id)
+      const exists = prev.find((item) => getItemId(item) === productId)
       if (exists) {
         return prev
       }
-      return [...prev, product]
+      return [...prev, { ...product, id: productId }]
     })
   }
 
   const removeFromWardrobe = (productId) => {
-    setSavedItems((prev) => prev.filter((item) => item.id !== productId))
+    setSavedItems((prev) => prev.filter((item) => getItemId(item) !== productId))
   }
 
   const isInWardrobe = (productId) => {
-    return savedItems.some((item) => item.id === productId)
+    return savedItems.some((item) => getItemId(item) === productId)
   }
 
   const addLook = (look) => {
@@ -131,25 +111,30 @@ export function WardrobeProvider({ children }) {
   }
 
   const addPurchasedItem = (product, options = {}) => {
+    const productId = getItemId(product)
+    if (!productId) return
+
     const purchasedItem = {
       ...product,
+      id: productId,
       purchasedAt: new Date().toISOString(),
       size: options.size || product.sizes?.[0] || 'M',
       color: options.color || (typeof product.colors?.[0] === 'string' ? product.colors[0] : product.colors?.[0]?.name || 'White'),
       quantity: options.quantity || 1,
     }
+
     setPurchasedItems((prev) => {
       // Check if item already exists (same product, size, color)
       const exists = prev.find(
         (item) =>
-          item.id === product.id &&
+          getItemId(item) === productId &&
           item.size === purchasedItem.size &&
           item.color === purchasedItem.color
       )
       if (exists) {
         // Update quantity if exists
         return prev.map((item) =>
-          item.id === exists.id && item.size === exists.size && item.color === exists.color
+          getItemId(item) === productId && item.size === exists.size && item.color === exists.color
             ? { ...item, quantity: item.quantity + purchasedItem.quantity }
             : item
         )

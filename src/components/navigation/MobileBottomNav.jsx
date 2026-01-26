@@ -6,14 +6,23 @@ import Link from 'next/link'
 import { Home, Shirt, Tag, User, Heart, X } from 'lucide-react'
 import { useCart } from '@/contexts/CartContext'
 import { useWishlist } from '@/contexts/WishlistContext'
+import { useAuth } from '@/contexts/AuthContext'
 
 function MobileBottomNav() {
   const pathname = usePathname()
   const { getTotalItems } = useCart()
   const { wishlistItems } = useWishlist()
-  const cartCount = getTotalItems()
-  const wishlistCount = wishlistItems.length
+  const { backendUser, openLoginModal } = useAuth()
+
+  const [mounted, setMounted] = useState(false)
   const [showWardrobeModal, setShowWardrobeModal] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const cartCount = mounted ? getTotalItems() : 0
+  const wishlistCount = mounted ? wishlistItems.length : 0
 
   // Pages where bottom nav should NOT be shown
   const excludedPaths = ['/new-arrivals', '/best-sellers', '/deals']
@@ -85,12 +94,29 @@ function MobileBottomNav() {
                   key={item.name}
                   onClick={() => setShowWardrobeModal(true)}
                   className="relative flex flex-col items-center justify-center gap-0.5 py-2 px-3 rounded-xl transition-all duration-200 active:scale-95 text-yellow-600 bg-yellow-50/50 cursor-pointer"
+                  suppressHydrationWarning
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-yellow-600/20 to-amber-700/20 rounded-xl blur-sm -z-10" />
                   <div className="relative transition-all duration-200 scale-100">
                     <IconComponent className="w-5.5 h-5.5" />
                   </div>
                   <span className="text-[10px] font-semibold transition-all duration-200">
+                    {item.name}
+                  </span>
+                </button>
+              )
+            }
+
+            if (item.name === 'Profile' && !backendUser) {
+              return (
+                <button
+                  key={item.name}
+                  onClick={openLoginModal}
+                  className="relative flex flex-col items-center justify-center gap-0.5 py-2 px-3 rounded-xl transition-all duration-200 active:scale-95 text-gray-500"
+                  suppressHydrationWarning
+                >
+                  <IconComponent className="w-5.5 h-5.5" />
+                  <span className="text-[10px] font-medium">
                     {item.name}
                   </span>
                 </button>
@@ -106,6 +132,7 @@ function MobileBottomNav() {
                     ? 'text-yellow-600'
                     : 'text-gray-500'
                 }`}
+                suppressHydrationWarning
               >
                 <div
                   className={`relative transition-all duration-200 ${
@@ -128,6 +155,7 @@ function MobileBottomNav() {
                 </span>
               </Link>
             )
+
           })}
         </div>
       </div>

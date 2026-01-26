@@ -57,13 +57,8 @@ export default function CategoryPage() {
 
   // Fetch products progressively
   const fetchProducts = useCallback(async (pageNum = 1, reset = false) => {
-    if ((isLoadingMore && !reset) || (!hasMore && !reset)) return
-    if (!validSlug) {
-      setIsLoading(false)
-      setIsLoadingMore(false)
-      return
-    }
-
+    if (!validSlug) return
+    
     try {
       if (reset) {
         setIsLoading(true)
@@ -71,9 +66,9 @@ export default function CategoryPage() {
         setPage(1)
         setHasMore(true)
         setSkeletonCount(6)
-      } else if (pageNum > 1) {
+      } else {
         setIsLoadingMore(true)
-        setSkeletonCount(prev => prev + 6)
+        setSkeletonCount(6)
       }
 
       const response = await productAPI.getByCategory(validSlug, selectedSubcategory !== 'all' ? selectedSubcategory : null, {
@@ -98,18 +93,16 @@ export default function CategoryPage() {
         setPage(pageNum)
       } else {
         setHasMore(false)
-        if (reset) setProducts([])
       }
     } catch (error) {
       console.error('Error fetching products:', error)
       setHasMore(false)
-      if (reset) setProducts([])
     } finally {
       setIsLoading(false)
       setIsLoadingMore(false)
       setSkeletonCount(0)
     }
-  }, [validSlug, selectedSubcategory, selectedSort, filters, hasMore, isLoadingMore])
+  }, [validSlug, selectedSubcategory, selectedSort, filters])
 
   // Initial fetch and refetch on dependencies change
   useEffect(() => {
@@ -272,7 +265,7 @@ export default function CategoryPage() {
     <div className="min-h-screen bg-white pb-20 flex">
       {/* Subcategory Sidebar */}
       <SubcategorySidebar
-        products={allProducts}
+        products={products}
         selectedSubcategory={selectedSubcategory}
         onSubcategorySelect={setSelectedSubcategory}
         type="subcategory"

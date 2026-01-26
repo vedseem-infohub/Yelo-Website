@@ -6,6 +6,7 @@ import { ArrowLeft, Plus, Minus, ShoppingBag, Info, X, Heart, Trash2, Truck, Tag
 import Link from 'next/link'
 import { useCart } from '@/contexts/CartContext'
 import { useWishlist } from '@/contexts/WishlistContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import PageWrapper from '@/components/common/PageWrapper'
 
@@ -13,10 +14,20 @@ export default function CartPage() {
   const router = useRouter()
   const { cartItems, updateQuantity, removeFromCart } = useCart()
   const { addToWishlist } = useWishlist()
+  const { backendUser, openLoginModal } = useAuth()
   const [showPriceBreakup, setShowPriceBreakup] = useState(false)
   const [showCouponInput, setShowCouponInput] = useState(false)
   const [couponCode, setCouponCode] = useState('')
   const [itemToRemove, setItemToRemove] = useState(null)
+
+  const handlePlaceOrder = () => {
+    if (!backendUser) {
+      openLoginModal()
+    } else {
+      router.push('/checkout')
+    }
+  }
+
 
   const handleUpdateQuantity = (item, change) => {
     const newQuantity = item.quantity + change
@@ -341,11 +352,12 @@ export default function CartPage() {
                   </div>
 
                   <button
-                    onClick={() => router.push('/checkout')}
+                    onClick={handlePlaceOrder}
                     className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white font-bold py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl mt-4"
                   >
                     Place Order
                   </button>
+
 
                   {priceDetails.totalDiscount > 0 && (
                     <p className="text-xs text-gray-500 text-center mt-3">
@@ -376,11 +388,12 @@ export default function CartPage() {
                 <span className="text-xl font-bold text-gray-900">₹{priceDetails.totalAmount.toFixed(2)}</span>
               </div>
               <button
-                onClick={() => router.push('/checkout')}
+                onClick={handlePlaceOrder}
                 className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white font-bold py-3 rounded-xl transition-all duration-300 shadow-lg"
               >
                 Place Order
               </button>
+
             </div>
           </div>
         )}

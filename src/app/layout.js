@@ -15,7 +15,7 @@ import ConditionalHeader from "@/components/layout/ConditionalHeader";
 import AuthGate from "@/components/auth/AuthGate";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 
-import { Toaster } from "react-hot-toast";
+import ToasterProvider from "@/components/common/ToasterProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -74,27 +74,8 @@ export default function RootLayout({ children }) {
                       {/* Login modal overlays on top */}
                       <AuthGate />
 
-                      {/* Global toaster */}
-                      <Toaster
-                        position="top-center"
-                        toastOptions={{
-                          duration: 2000,
-                          style: {
-                            background: "#ffffff",
-                            color: "#333333",
-                            borderRadius: "12px",
-                            padding: "12px 16px",
-                            boxShadow:
-                              "0 4px 12px rgba(0, 0, 0, 0.15)",
-                          },
-                          success: {
-                            iconTheme: {
-                              primary: "#FCD34D",
-                              secondary: "#ffffff",
-                            },
-                          },
-                        }}
-                      />
+                      {/* Global toaster with close button */}
+                      <ToasterProvider />
 
                           </NotificationProvider>
                         </HeaderProvider>

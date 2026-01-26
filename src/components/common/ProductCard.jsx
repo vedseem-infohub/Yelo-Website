@@ -19,10 +19,15 @@ const ProductCard = ({
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const [isWishlisted, setIsWishlisted] = useState(false)
 
+  // Determine the correct product ID
+  const productId = product.id || product._id
+
   // Check if product is in wishlist on mount
   useEffect(() => {
-    setIsWishlisted(isInWishlist(product.id))
-  }, [product.id, isInWishlist])
+    if (productId) {
+      setIsWishlisted(isInWishlist(productId))
+    }
+  }, [productId, isInWishlist])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
@@ -59,7 +64,7 @@ const ProductCard = ({
     e.preventDefault()
     e.stopPropagation()
     if (isWishlisted) {
-      removeFromWishlist(product.id)
+      removeFromWishlist(productId)
       setIsWishlisted(false)
     } else {
       addToWishlist(product)
@@ -394,14 +399,6 @@ const ProductCard = ({
             </div>
           )}
 
-          {/* Out of Stock Overlay */}
-          {(product.stock === 0 || product.stock === '0') && (
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-30 rounded-t-lg">
-              <div className="bg-red-600 text-white px-4 py-2 rounded-full font-semibold text-sm shadow-lg">
-                Out of Stock
-              </div>
-            </div>
-          )}
 
           {/* Wishlist Button */}
           {variant !== 'cart' && (
@@ -422,7 +419,7 @@ const ProductCard = ({
               <Heart 
                 className={`w-4 h-4 transition-all duration-300 ${
                   isWishlisted 
-                    ? 'fill-yellow-500 text-yellow-500 scale-110' 
+                    ? 'fill-red-500 text-red-500 scale-110' 
                     : theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                 }`} 
               />
@@ -435,7 +432,7 @@ const ProductCard = ({
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
-                onRemove(product.id)
+                onRemove(productId)
               }}
               className="absolute top-3 right-3 p-2.5 bg-white/90 backdrop-blur-sm rounded-full transition-all duration-300 z-20 shadow-lg hover:bg-red-50"
               aria-label="Remove item"
