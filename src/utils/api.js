@@ -312,10 +312,16 @@ export const paymentAPI = {
  * Auth API functions
  */
 export const authAPI = {
-  firebaseLogin: async (idToken) => {
-    return apiFetch("/auth/firebase-login", {
+  requestOTP: async (phone) => {
+    return apiFetch("/auth/request-otp", {
       method: "POST",
-      body: JSON.stringify({ idToken }),
+      body: JSON.stringify({ phone }),
+    });
+  },
+  verifyOTP: async (phone, code) => {
+    return apiFetch("/auth/verify-otp", {
+      method: "POST",
+      body: JSON.stringify({ phone, code }),
     });
   },
 };

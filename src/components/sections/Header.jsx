@@ -426,6 +426,14 @@ function Header() {
 
           {/* Icons Section - 40% width, evenly spaced */}
           <div className="flex-[0.4] flex items-center justify-around gap-2">
+            {/* Profile Icon */}
+            <Link 
+              href="/account" 
+              className={`relative p-2 rounded-full ${hoverBgClass} transition-all duration-200 active:scale-95 shrink-0`}
+            >
+              <User className={`w-5 h-5 ${textColorClass}`} />
+            </Link>
+
             {/* Wishlist Icon with Badge */}
             <Link 
               href="/wishlist" 
@@ -465,6 +473,7 @@ function Header() {
               )}
             </Link>
           </div>
+
         </div>
 
           {/* Row 4: Header Tab Slider - Always Visible, Sticky on scroll */}
@@ -620,6 +629,17 @@ function Header() {
 
             {/* Icons Section - 40% width, evenly spaced */}
             <div className="flex-[0.4] flex items-center justify-around gap-4">
+              {/* Profile Icon */}
+              <Link 
+                href="/account" 
+                className="relative cursor-pointer group flex flex-col items-center transition-all duration-200 hover:scale-110 active:scale-95"
+              >
+                <User className={`w-6 h-6 ${textColorClass} ${isLuxuryPage ? 'group-hover:text-yellow-400' : 'group-hover:text-yellow-600'} transition-colors`} />
+                <span className={`text-xs mt-1 font-medium ${
+                  isLuxuryPage ? 'text-gray-300 group-hover:text-yellow-400' : 'text-gray-600 group-hover:text-yellow-600'
+                } transition-colors`}>Profile</span>
+              </Link>
+
               {/* Wishlist Icon with Badge */}
               <Link 
                 href="/wishlist" 
@@ -668,6 +688,7 @@ function Header() {
                 )}
               </Link>
             </div>
+
           </div>
 
           {/* Row 4: Header Tab Slider - Always Visible, Sticky on scroll */}

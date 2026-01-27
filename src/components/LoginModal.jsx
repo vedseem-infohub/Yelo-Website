@@ -10,26 +10,24 @@ import LocationModal from "./LocationModal";
 
 export default function LoginModal({ isOpen, setIsOpen }) {
   const router = useRouter();
-  const { sendOtp, loginWithBackend, backendUser, setBackendUser } = useAuth();
+  const { sendOtp, verifyOtp, backendUser, setBackendUser } = useAuth();
+
 
   const [step, setStep] = useState("PHONE");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
-  const [confirmationResult, setConfirmationResult] = useState(null);
+
   const [showSetupModal, setShowSetupModal] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
 
   const otpLock = useRef(false);
 
-  // Prevent closing modal if user is not logged in
+  // Allow closing modal
   const handleClose = () => {
-    if (backendUser) {
-      setIsOpen(false);
-    } else {
-      toast.error("Please complete login to continue");
-    }
+    setIsOpen(false);
   };
+
 
   if (!isOpen) return null;
 
@@ -56,8 +54,8 @@ export default function LoginModal({ isOpen, setIsOpen }) {
         duration: 10000,
       });
 
-      const result = await sendOtp(formattedPhone);
-      setConfirmationResult(result);
+      await sendOtp(formattedPhone);
+
 
       // Dismiss loading toast and show success
       toast.dismiss("sending-otp");
@@ -88,7 +86,7 @@ export default function LoginModal({ isOpen, setIsOpen }) {
 
   /* VERIFY OTP */
   const handleVerifyOtp = async () => {
-    if (!confirmationResult || loading) return;
+    if (loading) return;
 
     if (otp.length !== 6) {
       toast.error("Enter valid 6-digit OTP");
@@ -98,11 +96,8 @@ export default function LoginModal({ isOpen, setIsOpen }) {
     try {
       setLoading(true);
 
-      // Verify OTP with Firebase
-      await confirmationResult.confirm(otp);
-      
-      // Login with backend - this checks if user exists in database
-      const data = await loginWithBackend();
+      // Verify OTP with Backend (Twilio)
+      const data = await verifyOtp(phone, otp);
 
       toast.success("Login successful!");
 
@@ -126,31 +121,25 @@ export default function LoginModal({ isOpen, setIsOpen }) {
       }
     } catch (err) {
       console.error(err);
-      if (err.code === "auth/invalid-verification-code") {
-        toast.error("Invalid OTP. Please try again.");
-      } else if (err.code === "auth/code-expired") {
-        toast.error("OTP expired. Please request a new one.");
-      } else {
-        toast.error(err.message || "OTP verification failed");
-      }
+      toast.error(err.message || "OTP verification failed");
     } finally {
       setLoading(false);
     }
   };
 
+
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm">
         <div className="bg-white w-full md:max-w-md rounded-t-3xl md:rounded-3xl shadow-2xl relative animate-slide-up">
-            {/* Close Button - Only show if user is logged in */}
-            {backendUser && (
-              <button
-                onClick={handleClose}
-                className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X className="w-5 h-5 text-gray-600" />
-              </button>
-            )}
+            {/* Close Button */}
+            <button
+              onClick={handleClose}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+
 
         {/* Header */}
         <div className="px-6 pt-8 pb-6">

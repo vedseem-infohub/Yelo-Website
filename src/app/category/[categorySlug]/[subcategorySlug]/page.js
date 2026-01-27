@@ -37,12 +37,8 @@ export default function CategorySubcategoryPage() {
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const observerTarget = useRef(null)
 
-  // Fetch products with pagination - only loads 6 at a time
+  // Fetch products with pagination
   const fetchProducts = useCallback(async (pageNum = 1, reset = false) => {
-    // Don't fetch if already loading more (unless it's a reset)
-    if (isLoadingMore && !reset) return
-    
-    // Don't fetch if no category/subcategory
     if (!categorySlug && !subcategorySlug) {
       setIsLoading(false)
       setIsLoadingMore(false)
@@ -53,14 +49,14 @@ export default function CategorySubcategoryPage() {
       if (reset) {
         setIsLoading(true)
         setPage(1)
-        setProducts([]) // Clear existing products on reset
+        setProducts([])
       } else {
         setIsLoadingMore(true)
       }
 
       const response = await productAPI.getByCategory(categorySlug, subcategorySlug, {
         page: pageNum,
-        limit: 6, // Always fetch 6 products at a time
+        limit: 6,
         sort: selectedSort,
         minPrice: filters.priceRange[0] > 0 ? filters.priceRange[0] : undefined,
         maxPrice: filters.priceRange[1] < 100000 ? filters.priceRange[1] : undefined,
@@ -69,41 +65,26 @@ export default function CategorySubcategoryPage() {
       if (response && response.success) {
         const newProducts = response.data || []
         
-        if (reset) {
-          // Reset: replace all products with new ones
-          setProducts(newProducts)
-        } else {
-          // Load more: append new products to existing ones
-          setProducts(prev => {
-            // Avoid duplicates by checking IDs
-            const existingIds = new Set(prev.map(p => p._id || p.id))
-            const uniqueNewProducts = newProducts.filter(p => !existingIds.has(p._id || p.id))
-            return [...prev, ...uniqueNewProducts]
-          })
-        }
+        setProducts(prev => {
+          if (reset) return newProducts
+          const existingIds = new Set(prev.map(p => p._id || p.id))
+          const uniqueNewProducts = newProducts.filter(p => !existingIds.has(p._id || p.id))
+          return [...prev, ...uniqueNewProducts]
+        })
         
-        // Update pagination state
         setHasMore(response.pagination?.hasMore || false)
         setPage(pageNum)
       } else {
-        // If no products found, that's okay - just set hasMore to false
-        if (reset) {
-          setProducts([])
-        }
         setHasMore(false)
       }
     } catch (error) {
       console.error('Error fetching products:', error)
-      // On error, don't break the UI - just stop loading more
-      if (reset) {
-        setProducts([])
-      }
       setHasMore(false)
     } finally {
       setIsLoading(false)
       setIsLoadingMore(false)
     }
-  }, [categorySlug, subcategorySlug, selectedSort, filters.priceRange, filters.sizes, filters.colors, filters.brands])
+  }, [categorySlug, subcategorySlug, selectedSort, filters])
 
   // Initial load and when filters/sort change - only fetch if we have category/subcategory
   useEffect(() => {
@@ -155,17 +136,17 @@ export default function CategorySubcategoryPage() {
 
   return (
     <PageWrapper showLoader={false}>
-      <div className="min-h-screen bg-gray-50 pb-24 pt-12 relative">
+      <div className="min-h-screen bg-gray-50 pt-24 relative">
         {/* Main Content Area */}
         <div className="max-w-7xl mx-auto px-1 py-4 md:px-6 md:py-6">
           {/* Page Header */}
-          <div className="mb-6 opacity-0">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 capitalize">
+          <div className="mb-6 px-3">
+            {/* <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 capitalize">
               {subcategorySlug.replace(/-/g, ' ')}
-            </h1>
-            <p className="text-gray-600 capitalize">
+            </h1> */}
+            {/* <p className="text-gray-600 capitalize">
               {categorySlug.replace(/-/g, ' ')}
-            </p>
+            </p> */}
           </div>
 
           {/* Products Grid */}

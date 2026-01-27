@@ -12,7 +12,9 @@ import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { getProductUrl } from '@/utils/productUrl'
-import { reviewAPI } from '@/utils/api'
+import ProductCard from '@/components/common/ProductCard'
+import ProductCardSkeleton from '@/components/common/ProductCardSkeleton'
+import { reviewAPI, productAPI } from '@/utils/api'
 import { saveProductData, saveRoute, getShopContext } from '@/utils/routePersistence'
 import { usePathname } from 'next/navigation'
 
@@ -22,8 +24,9 @@ const ProductDetail = ({ product }) => {
   const { addToCart, getTotalItems } = useCart()
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
   const { allProducts, getShopProducts } = useProducts()
-  const { backendUser } = useAuth()
+  const { backendUser, openLoginModal } = useAuth()
   const cartItemCount = getTotalItems()
+
   const [showSetupAccountModal, setShowSetupAccountModal] = useState(false)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0]?.name || '')
@@ -43,6 +46,10 @@ const ProductDetail = ({ product }) => {
   const [showImageModal, setShowImageModal] = useState(false)
   const [modalImageIndex, setModalImageIndex] = useState(0)
   const [imageZoom, setImageZoom] = useState(1)
+  const [apiRelatedProducts, setApiRelatedProducts] = useState([])
+  const [loadingRelated, setLoadingRelated] = useState(false)
+  const [relatedPage, setRelatedPage] = useState(1)
+  const [hasMoreRelated, setHasMoreRelated] = useState(true)
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
@@ -56,7 +63,74 @@ const ProductDetail = ({ product }) => {
   const pinchStartDistance = useRef(0)
   const pinchStartZoom = useRef(1)
   const lastTouchTime = useRef(0)
-  const [swipeDirection, setSwipeDirection] = useState('right') 
+  const [swipeDirection, setSwipeDirection] = useState('right') // Track swipe direction for animation
+  const [readyToLoadRelated, setReadyToLoadRelated] = useState(false)
+
+  // Wait for initial render and details to appear before loading related products
+  useEffect(() => {
+    if (product) {
+      const timer = setTimeout(() => {
+        setReadyToLoadRelated(true)
+      }, 600) // 600ms delay to let the main UI settle
+      return () => clearTimeout(timer)
+    }
+  }, [product?.id, product?._id])
+
+  // Fetch related products from API with progressive loading
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      const category = product?.category
+      const subcategory = product?.subcategory
+      
+      if (!category || !hasMoreRelated || !readyToLoadRelated) return
+
+      try {
+        setLoadingRelated(true)
+        // Use limit of 5 from API
+        const response = await productAPI.getByCategory(category, subcategory, { 
+          page: relatedPage, 
+          limit: 5 
+        })
+        
+        if (response.success && response.data) {
+          const currentId = product._id || product.id
+          // Filter out the current product
+          const filtered = response.data.filter(p => (p._id || p.id) !== currentId)
+          
+          setApiRelatedProducts(prev => {
+            // Avoid duplicates
+            const existingIds = new Set(prev.map(p => p._id || p.id))
+            const newProducts = filtered.filter(p => !existingIds.has(p._id || p.id))
+            return [...prev, ...newProducts]
+          })
+
+          // Check if there are more products to fetch
+          const totalFetched = (relatedPage - 1) * 5 + response.data.length
+          const totalAvailable = response.pagination?.total || 0
+          
+          if (totalFetched < totalAvailable && response.data.length > 0) {
+            // Trigger next page fetch after a short delay for "progressive" feel
+            setTimeout(() => {
+              setRelatedPage(prev => prev + 1)
+            }, 1000)
+          } else {
+            setHasMoreRelated(false)
+          }
+        } else {
+          setHasMoreRelated(false)
+        }
+      } catch (error) {
+        console.error('Error fetching related products:', error)
+        setHasMoreRelated(false)
+      } finally {
+        setLoadingRelated(false)
+      }
+    }
+
+    if (product && readyToLoadRelated) {
+      fetchRelatedProducts()
+    }
+  }, [product, relatedPage, readyToLoadRelated])
 
   // Save product data and route to localStorage when product loads
   useEffect(() => {
@@ -245,6 +319,11 @@ const ProductDetail = ({ product }) => {
   }
 
   const handleAddToCart = async () => {
+    if (!backendUser) {
+      openLoginModal()
+      return
+    }
+
     // Check if product is out of stock
     if (product.stock === 0 || product.stock === '0') {
       alert('This product is currently out of stock.')
@@ -271,8 +350,13 @@ const ProductDetail = ({ product }) => {
   }
 
   const handleBuyNow = () => {
+    if (!backendUser) {
+      openLoginModal()
+      return
+    }
+
     // Validate user has a name (required for orders)
-    if (!backendUser || !backendUser.name || !backendUser.name.trim()) {
+    if (!backendUser.name || !backendUser.name.trim()) {
       setShowSetupAccountModal(true)
       toast.error('Please provide your name to place an order')
       return
@@ -925,7 +1009,7 @@ const ProductDetail = ({ product }) => {
         )}
 
         {/* Product Details */}
-        <div className="border-t border-yellow-100 pt-5">
+        {/* <div className="border-t border-yellow-100 pt-5">
           <h3 className="text-sm font-semibold text-gray-800 mb-3 uppercase tracking-wide flex items-center gap-2">
             <span className="w-1 h-5 bg-yellow-500 rounded-full"></span>
             Product Details
@@ -950,7 +1034,7 @@ const ProductDetail = ({ product }) => {
               <span className="text-gray-900 font-semibold">{product.description?.includes('Graphic') ? 'Graphic Print' : 'Solid'}</span>
             </p>
           </div>
-        </div>
+        </div> */}
 
         {/* Ratings & Reviews Section */}
         <div className="border-t border-yellow-100 pt-5">
@@ -1078,56 +1162,45 @@ const ProductDetail = ({ product }) => {
         </div>
       </div>
 
-      {/* Related Products Section - Products from Shop User Came From */}
-      {relatedProducts.length > 0 && (
-        <div className="px-5 py-6 bg-white">
-          <div className="flex items-center justify-between mb-5">
+      {/* Related Products Section - Products from Same Category & Subcategory */}
+      {(loadingRelated || apiRelatedProducts.length > 0) && (
+        <div className="px-2 py-6 bg-white border-t border-yellow-100">
+          <div className="flex items-center justify-between mb-5 px-3">
             <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide flex items-center gap-2">
               <span className="w-1 h-4 bg-yellow-500 rounded-full"></span>
-              You May Also Like
+              Related Products
             </h3>
+            {product?.category && (
+              <Link 
+                href={`/category/${product.category.toLowerCase().replace(/\s+/g, '-')}${product.subcategory ? `/${product.subcategory.toLowerCase().replace(/\s+/g, '-')}` : ''}`}
+                className="text-xs font-bold text-yellow-600 hover:text-yellow-700 flex items-center gap-1 group/link"
+              >
+                View All
+                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
+              </Link>
+            )}
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            {relatedProducts.map((relatedProduct) => {
-              const productUrl = getProductUrl(relatedProduct)
-              const productImage = relatedProduct.images && relatedProduct.images.length > 0
-                ? (typeof relatedProduct.images[0] === 'string'
-                  ? relatedProduct.images[0]
-                  : relatedProduct.images[0]?.url || relatedProduct.images[0])
-                : null
-
-              return (
-                <Link
-                  key={relatedProduct._id || relatedProduct.id}
-                  href={productUrl}
-                  className="group"
-                >
-                  <div className="aspect-square bg-gray-100 rounded-xl mb-2 overflow-hidden shadow-sm group-hover:shadow-md transition-shadow">
-                    {productImage ? (
-                      <img
-                        src={productImage}
-                        alt={relatedProduct.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="text-4xl">{relatedProduct.emoji || '🛍️'}</span>
-                      </div>
-                    )}
+          
+          <div className="flex gap-1 overflow-x-auto pb-4 scrollbar-hide snap-x touch-pan-x">
+            {apiRelatedProducts.map((relatedProduct) => (
+              <div 
+                key={relatedProduct._id || relatedProduct.id} 
+                className="min-w-[150px] w-[150px] sm:min-w-[220px] sm:w-[220px] snap-start"
+              >
+                <ProductCard product={relatedProduct} compact={true} />
+              </div>
+            ))}
+            
+            {/* Shimmer loading for progressive batches */}
+            {loadingRelated && (
+              <>
+                {[1, 2, 3].map((i) => (
+                  <div key={`shim-${i}`} className="min-w-[150px] w-[150px] sm:min-w-[220px] sm:w-[220px] snap-start">
+                    <ProductCardSkeleton compact={true} />
                   </div>
-                  <p className="text-xs font-medium text-gray-800 line-clamp-2 mb-1 group-hover:text-yellow-600 transition-colors leading-tight">
-                    {relatedProduct.name}
-                  </p>
-                  <p className="text-sm font-bold text-yellow-600">
-                    ₹{relatedProduct.price}
-                    {relatedProduct.originalPrice && relatedProduct.originalPrice > relatedProduct.price && (
-                      <span className="text-xs text-gray-400 line-through ml-1.5 font-normal">₹{relatedProduct.originalPrice}</span>
-                    )}
-                  </p>
-                </Link>
-              )
-            })}
+                ))}
+              </>
+            )}
           </div>
         </div>
       )}

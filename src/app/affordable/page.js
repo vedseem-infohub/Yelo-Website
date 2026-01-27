@@ -253,7 +253,7 @@ export default function AffordablePage() {
         </div>
 
         {/* Main Content Area */}
-        <div className="max-w-7xl mx-auto px-1 py-6 md:py-8">
+        <div className="max-w-7xl mx-auto px-1 py-6 pb-16 md:py-16">
           <div className="flex gap-6">
             {/* Sticky Left Filter Panel - Desktop */}
             <div className="hidden md:block">
@@ -302,7 +302,7 @@ export default function AffordablePage() {
                       }
                       return (
                         <AffordableProductCard
-                          key={item.data._id || item.data.id || `affordable-${index}`}
+                          key={`${item.data._id || item.data.id || 'product'}-${index}`}
                           product={item.data}
                         />
                       )
@@ -324,12 +324,14 @@ export default function AffordablePage() {
           <button
             onClick={() => setIsFilterOpen(true)}
             className="flex-1 py-4 px-4 bg-yellow-500 text-white font-semibold text-center hover:bg-yellow-600 transition-colors"
+            suppressHydrationWarning
           >
             Filter
           </button>
           <button
             onClick={() => setIsSortOpen(true)}
             className="flex-1 py-4 px-4 bg-yellow-500 text-white font-semibold text-center hover:bg-yellow-600 transition-colors border-l-2 border-yellow-400"
+            suppressHydrationWarning
           >
             Sort
           </button>
