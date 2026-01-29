@@ -322,7 +322,7 @@ function Header() {
             {/* Logo - Left Corner */}
             <Link href="/" className="flex items-center group shrink-0">
               <div className="relative">
-                <h1 className={`text-2xl font-extrabold bg-gradient-to-r from-yellow-500 via-yellow-600 to-amber-600 bg-clip-text text-transparent drop-shadow-sm ${
+                <h1 className={`text-2xl font-bold bg-gradient-to-r from-yellow-500 via-yellow-600 to-amber-600 bg-clip-text text-transparent drop-shadow-sm ${
                   isLuxuryPage ? 'opacity-90' : ''
                 }`}>
                   YEAHLO
@@ -519,8 +519,8 @@ function Header() {
               {/* Logo - Left Corner */}
               <Link href="/" className="flex items-center group shrink-0">
                 <div className="relative">
-                  <h1 className="text-3xl font-extrabold bg-gradient-to-r from-yellow-500 via-yellow-600 to-amber-600 bg-clip-text text-transparent drop-shadow-sm">
-                    Yelo
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-500 via-yellow-600 to-amber-600 bg-clip-text text-transparent drop-shadow-sm">
+                    YEAHLO
                   </h1>
                   <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-yellow-500 to-amber-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                 </div>
@@ -608,12 +608,6 @@ function Header() {
 
           <div 
             className="sticky top-0 z-40 transition-all duration-300"
-            style={{
-              backgroundImage: 'url(/banner5.jpeg)',
-              backgroundSize: '100% 100%',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
           >
             {/* Row 3: Primary Header Row: Search (60%) + Icons (40%) - Always Visible */}
             <div className={`flex items-center gap-6 py-3 border-b ${headerBorderClass}`}>
