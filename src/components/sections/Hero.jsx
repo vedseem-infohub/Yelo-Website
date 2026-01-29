@@ -8,7 +8,7 @@ const slides = [
   '/hero2.jpg',
   '/hero3.jpg',
   '/hero4.jpg',
-  '/hero5.jpg',
+  '/banner4.jpeg',
   '/hero6.jpg',
 ]
 

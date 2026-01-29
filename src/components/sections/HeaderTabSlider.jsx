@@ -71,7 +71,7 @@ export default function HeaderTabSlider({
   return (
     <nav 
       ref={containerRef}
-      className={`relative flex items-center gap-1 md:gap-8 overflow-x-auto scrollbar-hide`}
+      className={`relative flex items-cente0r bg-transparent gap-1 md:gap-8 overflow-x-auto scrollbar-hide`}
     >
       {tabs.map((tab) => {
         const isActive = activeTab.id === tab.id
@@ -89,7 +89,7 @@ export default function HeaderTabSlider({
               whitespace-nowrap
               transition-colors duration-200
               ${isActive ? navLinkActiveClass : navLinkInactiveClass}
-              ${isLuxuryPage ? 'text-yellow-400 ' : ''}
+              ${isLuxuryPage ? 'text-yellow-400 ' : ' v'}
             `}
           >
             {tab.name}

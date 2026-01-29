@@ -70,12 +70,12 @@ function SuperSavers() {
       <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-pink-600 px-4 py-4 mb-4 rounded-t-2xl">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-bold text-white mb-1">SUPER SAVERS</h2>
-          <Link href="/super-savers">
+          {/* <Link href="/super-savers"> */}
             <div className="flex items-center gap-2 cursor-pointer hover:opacity-90 transition-opacity">
               <p className="text-white text-sm">Prices Slashed, Style Doubled</p>
               <ChevronRight className="w-4 h-4 text-white" />
             </div>
-          </Link>
+          {/* </Link> */}
         </div>
       </div>
 
