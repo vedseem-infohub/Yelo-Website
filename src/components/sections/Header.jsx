@@ -395,7 +395,8 @@ function Header() {
             </button>
           </div>
         </div>
-
+       
+       <div style={{backgroundImage: 'url(/banner5.jpeg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
         {/* Row 3: Primary Header Row: Search (60%) + Icons (40%) - Always Visible */}
         <div className={`px-4 py-2.5 flex items-center gap-3`}>
           {/* Search Bar - 60% width */}
@@ -426,13 +427,6 @@ function Header() {
 
           {/* Icons Section - 40% width, evenly spaced */}
           <div className="flex-[0.4] flex items-center justify-around gap-2">
-            {/* Profile Icon */}
-            <Link 
-              href="/account" 
-              className={`relative p-2 rounded-full ${hoverBgClass} transition-all duration-200 active:scale-95 shrink-0`}
-            >
-              <User className={`w-5 h-5 ${textColorClass}`} />
-            </Link>
 
             {/* Wishlist Icon with Badge */}
             <Link 
@@ -477,8 +471,8 @@ function Header() {
         </div>
 
           {/* Row 4: Header Tab Slider - Always Visible, Sticky on scroll */}
-        <div className={`sticky top-0 z-40 bo bg-white ${isLuxuryPage ? 'bg-gray-900/95' : ''} transition-all duration-300`}>
-          <div className={`px-3 py-1.5 md:px-6 md:py-3 ${isLuxuryPage ? 'bg-gradient-to-b from-gray-900/95 via-gray-800/95 to-gray-900/95' : ''}`}>
+          <div className={`sticky top-0 z-40 border-b ${headerBorderClass} transition-all duration-300`}>
+          <div className={`px-3 py-1.5 md:px-6 md:py-3 ${isLuxuryPage ? 'bg-gradient-to-b from-gray-900/95 via-gray-800/95 to-gray-900/95' : 'bg-transparent'}`}>
             <HeaderTabSlider
               selectedTab={selectedTab}
               onTabSelect={setSelectedTab}
@@ -487,6 +481,7 @@ function Header() {
             />
           </div>
         </div>
+       </div> 
       </div>
 
       {/* Desktop Header - Hidden on mobile, visible on desktop (md and up) */}
@@ -607,114 +602,124 @@ function Header() {
             </div>
           </div>
 
-          {/* Row 3: Primary Header Row: Search (60%) + Icons (40%) - Always Visible */}
-          <div className={`flex items-center gap-6 py-3 border-b ${headerBorderClass}`}>
-            {/* Search Bar - 60% width */}
-            <div className="relative flex-[0.6] min-w-0">
-              <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
-                isLuxuryPage ? 'text-gray-400 group-focus-within:text-yellow-500' : 'text-gray-400 group-focus-within:text-yellow-600'
-              } transition-colors`} />
-              <input
-                suppressHydrationWarning={true}
-                type="text"
-                placeholder="Search for products, brands and more"
-                readOnly
-                onClick={handleSearchFocus}
-                onFocus={handleSearchFocus}
-                className={`w-full pl-12 pr-4 py-3 rounded-xl border-2 ${searchBarBorderClass} focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer ${searchBarBgClass} ${
-                  isLuxuryPage ? 'text-gray-200 placeholder-gray-500' : 'text-gray-900'
-                }`}
-              />
+          <div 
+            className="sticky top-0 z-40 transition-all duration-300"
+            style={{
+              backgroundImage: 'url(/banner5.jpeg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            {/* Row 3: Primary Header Row: Search (60%) + Icons (40%) - Always Visible */}
+            <div className={`flex items-center gap-6 py-3 border-b ${headerBorderClass}`}>
+              {/* Search Bar - 60% width */}
+              <div className="relative flex-[0.6] min-w-0">
+                <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
+                  isLuxuryPage ? 'text-gray-400 group-focus-within:text-yellow-500' : 'text-gray-400 group-focus-within:text-yellow-600'
+                } transition-colors`} />
+                <input
+                  suppressHydrationWarning={true}
+                  type="text"
+                  placeholder="Search for products, brands and more"
+                  readOnly
+                  onClick={handleSearchFocus}
+                  onFocus={handleSearchFocus}
+                  className={`w-full pl-12 pr-4 py-3 rounded-xl border-2 ${searchBarBorderClass} focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer ${searchBarBgClass} ${
+                    isLuxuryPage ? 'text-gray-200 placeholder-gray-500' : 'text-gray-900'
+                  }`}
+                />
+              </div>
+
+              {/* Icons Section - 40% width, evenly spaced */}
+              <div className="flex-[0.4] flex items-center justify-around gap-4">
+                {/* Profile Icon */}
+                <Link 
+                  href="/account" 
+                  className="relative cursor-pointer group flex flex-col items-center transition-all duration-200 hover:scale-110 active:scale-95"
+                >
+                  <User className={`w-6 h-6 ${textColorClass} ${isLuxuryPage ? 'group-hover:text-yellow-400' : 'group-hover:text-yellow-600'} transition-colors`} />
+                  <span className={`text-xs mt-1 font-medium ${
+                    isLuxuryPage ? 'text-gray-300 group-hover:text-yellow-400' : 'text-gray-600 group-hover:text-yellow-600'
+                  } transition-colors`}>Profile</span>
+                </Link>
+
+                {/* Wishlist Icon with Badge */}
+                <Link 
+                  href="/wishlist" 
+                  className="relative cursor-pointer group flex flex-col items-center transition-all duration-200 hover:scale-110 active:scale-95"
+                >
+                  <Heart className={`w-6 h-6 ${textColorClass} ${isLuxuryPage ? 'group-hover:text-yellow-400' : 'group-hover:text-yellow-600'} transition-colors`} />
+                  <span className={`text-xs mt-1 font-medium ${
+                    isLuxuryPage ? 'text-gray-300 group-hover:text-yellow-400' : 'text-gray-600 group-hover:text-yellow-600'
+                  } transition-colors`}>Wishlist</span>
+                  {wishlistItems.length > 0 && (
+                    <span className="absolute -top-1 right-0 min-w-[20px] h-[20px] flex items-center justify-center px-1 bg-red-500 text-white text-[11px] font-bold rounded-full border-2 border-white">
+                      {wishlistItems.length > 99 ? '99+' : wishlistItems.length}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Cart Icon with Badge */}
+                <Link 
+                  href="/cart" 
+                  className="relative cursor-pointer group flex flex-col items-center transition-all duration-200 hover:scale-110 active:scale-95"
+                >
+                  <ShoppingBag className={`w-6 h-6 ${textColorClass} ${isLuxuryPage ? 'group-hover:text-yellow-400' : 'group-hover:text-yellow-600'} transition-colors`} />
+                  <span className={`text-xs mt-1 font-medium ${
+                    isLuxuryPage ? 'text-gray-300 group-hover:text-yellow-400' : 'text-gray-600 group-hover:text-yellow-600'
+                  } transition-colors`}>Cart</span>
+                  {getCartTotal() > 0 && (
+                    <span className="absolute -top-1 right-0 min-w-[20px] h-[20px] flex items-center justify-center px-1 bg-red-500 text-white text-[11px] font-bold rounded-full border-2 border-white">
+                      {getCartTotal() > 99 ? '99+' : getCartTotal()}
+                    </span>
+                  )}
+                </Link>
+
+                {/* Notifications Icon with Badge */}
+                <Link 
+                  href="/notifications" 
+                  className="relative cursor-pointer group flex flex-col items-center transition-all duration-200 hover:scale-110 active:scale-95"
+                >
+                  <Bell className={`w-6 h-6 ${textColorClass} ${isLuxuryPage ? 'group-hover:text-yellow-400' : 'group-hover:text-yellow-600'} transition-colors`} />
+                  <span className={`text-xs mt-1 font-medium ${
+                    isLuxuryPage ? 'text-gray-300 group-hover:text-yellow-400' : 'text-gray-600 group-hover:text-yellow-600'
+                  } transition-colors`}>Notifications</span>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 right-0 min-w-[20px] h-[20px] flex items-center justify-center px-1 bg-red-500 text-white text-[11px] font-bold rounded-full border-2 border-white">
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
+                  )}
+                </Link>
+              </div>
             </div>
 
-            {/* Icons Section - 40% width, evenly spaced */}
-            <div className="flex-[0.4] flex items-center justify-around gap-4">
-              {/* Profile Icon */}
-              <Link 
-                href="/account" 
-                className="relative cursor-pointer group flex flex-col items-center transition-all duration-200 hover:scale-110 active:scale-95"
-              >
-                <User className={`w-6 h-6 ${textColorClass} ${isLuxuryPage ? 'group-hover:text-yellow-400' : 'group-hover:text-yellow-600'} transition-colors`} />
-                <span className={`text-xs mt-1 font-medium ${
-                  isLuxuryPage ? 'text-gray-300 group-hover:text-yellow-400' : 'text-gray-600 group-hover:text-yellow-600'
-                } transition-colors`}>Profile</span>
-              </Link>
-
-              {/* Wishlist Icon with Badge */}
-              <Link 
-                href="/wishlist" 
-                className="relative cursor-pointer group flex flex-col items-center transition-all duration-200 hover:scale-110 active:scale-95"
-              >
-                <Heart className={`w-6 h-6 ${textColorClass} ${isLuxuryPage ? 'group-hover:text-yellow-400' : 'group-hover:text-yellow-600'} transition-colors`} />
-                <span className={`text-xs mt-1 font-medium ${
-                  isLuxuryPage ? 'text-gray-300 group-hover:text-yellow-400' : 'text-gray-600 group-hover:text-yellow-600'
-                } transition-colors`}>Wishlist</span>
-                {wishlistItems.length > 0 && (
-                  <span className="absolute -top-1 right-0 min-w-[20px] h-[20px] flex items-center justify-center px-1 bg-red-500 text-white text-[11px] font-bold rounded-full border-2 border-white">
-                    {wishlistItems.length > 99 ? '99+' : wishlistItems.length}
-                  </span>
-                )}
-              </Link>
-
-              {/* Cart Icon with Badge */}
-              <Link 
-                href="/cart" 
-                className="relative cursor-pointer group flex flex-col items-center transition-all duration-200 hover:scale-110 active:scale-95"
-              >
-                <ShoppingBag className={`w-6 h-6 ${textColorClass} ${isLuxuryPage ? 'group-hover:text-yellow-400' : 'group-hover:text-yellow-600'} transition-colors`} />
-                <span className={`text-xs mt-1 font-medium ${
-                  isLuxuryPage ? 'text-gray-300 group-hover:text-yellow-400' : 'text-gray-600 group-hover:text-yellow-600'
-                } transition-colors`}>Cart</span>
-                {getCartTotal() > 0 && (
-                  <span className="absolute -top-1 right-0 min-w-[20px] h-[20px] flex items-center justify-center px-1 bg-red-500 text-white text-[11px] font-bold rounded-full border-2 border-white">
-                    {getCartTotal() > 99 ? '99+' : getCartTotal()}
-                  </span>
-                )}
-              </Link>
-
-              {/* Notifications Icon with Badge */}
-              <Link 
-                href="/notifications" 
-                className="relative cursor-pointer group flex flex-col items-center transition-all duration-200 hover:scale-110 active:scale-95"
-              >
-                <Bell className={`w-6 h-6 ${textColorClass} ${isLuxuryPage ? 'group-hover:text-yellow-400' : 'group-hover:text-yellow-600'} transition-colors`} />
-                <span className={`text-xs mt-1 font-medium ${
-                  isLuxuryPage ? 'text-gray-300 group-hover:text-yellow-400' : 'text-gray-600 group-hover:text-yellow-600'
-                } transition-colors`}>Notifications</span>
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 right-0 min-w-[20px] h-[20px] flex items-center justify-center px-1 bg-red-500 text-white text-[11px] font-bold rounded-full border-2 border-white">
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </span>
-                )}
-              </Link>
-            </div>
-
-          </div>
-
-          {/* Row 4: Header Tab Slider - Always Visible, Sticky on scroll */}
-          <div className={`sticky top-0 z-40 border-b ${headerBorderClass} ${headerBgClass} transition-all duration-300`}>
-            <div className="flex items-center justify-between py-3">
-              <HeaderTabSlider
-                isLuxuryPage={isLuxuryPage}
-              />
-              <div className="ml-auto flex items-center gap-4">
-                <button
-                  onClick={() => handleNavigation('/login')}
-                  className={`${isLuxuryPage ? 'text-gray-300 hover:text-yellow-400 hover:bg-white/5' : 'text-gray-700 hover:text-yellow-600 hover:bg-yellow-50'} font-semibold transition-all duration-200 px-5 py-2.5 rounded-xl`}
-                >
-                  Login
-                </button>
-                <button
-                  onClick={() => handleNavigation('/register')}
-                  className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white font-bold px-7 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
-                >
-                  Register
-                </button>
+            {/* Row 4: Header Tab Slider - Always Visible */}
+            <div className={`border-b ${headerBorderClass} transition-all duration-300`}>
+              <div className="flex items-center justify-between py-3">
+                <HeaderTabSlider
+                  isLuxuryPage={isLuxuryPage}
+                />
+                <div className="ml-auto flex items-center gap-4">
+                  <button
+                    onClick={() => handleNavigation('/login')}
+                    className={`${isLuxuryPage ? 'text-gray-300 hover:text-yellow-400 hover:bg-white/5' : 'text-gray-700 hover:text-yellow-600 hover:bg-yellow-50'} font-semibold transition-all duration-200 px-5 py-2.5 rounded-xl`}
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => handleNavigation('/register')}
+                    className="bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white font-bold px-7 py-2.5 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+                  >
+                    Register
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+          </div>
         </div>
-      </div>
+      
 
       {/* Location Modal */}
       <LocationModal
