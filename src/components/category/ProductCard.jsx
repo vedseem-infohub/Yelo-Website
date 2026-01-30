@@ -359,31 +359,32 @@ const ProductCard = ({
             {product.name}
           </h3>
 
-          {/* Price Section - Single Line */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-base font-bold text-gray-900">
-              ${product.price}
-            </span>
-            {product.originalPrice && (
-              <>
+          {/* Price Section - Optimized for visibility */}
+          <div className="space-y-1">
+            {/* Price and Original Price Row */}
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold text-gray-900">
+                ₹{product.price}
+              </span>
+              {product.originalPrice && product.originalPrice > product.price && (
                 <span className="text-sm text-gray-500 line-through">
-                  ${product.originalPrice}
+                  ₹{product.originalPrice}
                 </span>
-                {discountPercentage && (
-                  <span className="text-xs font-bold text-orange-600">
-                    {discountPercentage}% OFF
-                  </span>
-                )}
-              </>
-            )}
-          </div>
+              )}
+            </div>
 
-          {/* Best Price - Single Line */}
-          {product.originalPrice && (
-            <p className="text-xs text-gray-600">
-              Best Price: <span className="font-bold text-gray-900">${bestPrice}</span>
-            </p>
-          )}
+            {/* Best Price and Discount Row */}
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-gray-600">
+                Best Price: <span className="font-bold text-gray-900">₹{bestPrice}</span>
+              </p>
+              {discountPercentage && (
+                <span className="text-xs font-bold text-orange-600 whitespace-nowrap">
+                  {discountPercentage}% OFF
+                </span>
+              )}
+            </div>
+          </div>
 
           {/* Add to Bag Button */}
           {showAddToBag && (

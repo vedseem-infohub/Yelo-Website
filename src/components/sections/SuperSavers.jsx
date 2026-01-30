@@ -3,21 +3,22 @@
 import React, { useRef } from 'react'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
+import Image from 'next/image'
 
 const superSaversCategories = [
-  {
-    id: 1,
-    name: 'Jackets',
-    price: 'UNDER ₹949',
-    image: '🧥',
-    brands: ['HRX', 'Adidas'],
-    href: '/super-savers/jacket-under-949',
-  },
+  // {
+  //   id: 1,
+  //   name: 'Jackets',
+  //   price: 'UNDER ₹949',
+  //   image: '/super-saver-offer-image/',
+  //   brands: ['HRX', 'Adidas'],
+  //   href: '/super-savers/jacket-under-949',
+  // },
   {
     id: 2,
     name: 'Kurta Sets',
     price: 'UNDER ₹1099',
-    image: '👗',
+    image: '/super-saver-offer-images/kurta-set.jpg',
     brands: ['Anouk', 'Jaspere'],
     href: '/super-savers/kurta-set-under-1099',
   },
@@ -25,7 +26,7 @@ const superSaversCategories = [
     id: 3,
     name: 'Sneakers',
     price: 'UNDER ₹1299',
-    image: '👟',
+    image: '/super-saver-offer-images/shoes.jpg',
     brands: ['Nike', 'Puma'],
     href: '/super-savers/sneaker-under-1299',
   },
@@ -33,7 +34,7 @@ const superSaversCategories = [
     id: 4,
     name: 'Sweaters',
     price: 'UNDER ₹549',
-    image: '🧶',
+    image: '/super-saver-offer-images/sweater.jpg',
     brands: ['Roadster', 'Dressberry'],
     href: '/super-savers/sweater-under-549',
   },
@@ -41,17 +42,9 @@ const superSaversCategories = [
     id: 5,
     name: 'Kurtas',
     price: 'UNDER ₹349',
-    image: '👘',
+    image: '/super-saver-offer-images/kurti.jpg',
     brands: ['Anouk'],
     href: '/super-savers/kurta-under-349',
-  },
-  {
-    id: 6,
-    name: 'Home Decor',
-    price: 'UNDER ₹799',
-    image: '🪴',
-    brands: ['Home Center'],
-    href: '/super-savers/home-decor-under-799',
   },
 ]
 
@@ -94,9 +87,16 @@ function SuperSavers() {
             >
               <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md active:scale-95">
                 {/* Product Image Area */}
-                <div className="bg-gray-50 h-48 flex items-center justify-center">
-                  <span className="text-6xl">{category.image}</span>
+                <div className="bg-gray-50 flex items-center justify-center">
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    width={200}
+                    height={160}
+                    className="object-cover"
+                  />
                 </div>
+
                 {/* Brand Logos */}
                 <div className="px-3 py-2 bg-white border-b border-gray-100">
                   <div className="flex items-center justify-center gap-2">

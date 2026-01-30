@@ -295,16 +295,16 @@ const AffordableProductCard = ({ product }) => {
         <div className="p-3 space-y-1.5">
           {/* Brand + Product Name - 2 Line Clamp */}
           <div>
-            <p className="text-xs text-gray-600 font-medium mb-0.5">
+            {/* <p className="text-xs text-gray-600 font-medium mb-0.5">
               {product.brand || 'Brand'}
-            </p>
+            </p> */}
             <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-tight">
               {product.name}
             </h3>
           </div>
 
           {/* Rating + Review Count */}
-          {product.rating && (
+          {/* {product.rating && (
             <div className="flex items-center gap-1.5">
               <div className="flex items-center gap-0.5">
                 <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
@@ -314,20 +314,33 @@ const AffordableProductCard = ({ product }) => {
                 <span className="text-xs text-gray-500">({product.reviews})</span>
               )}
             </div>
-          )}
+          )} */}
 
-          {/* Price Section - Bold Discounted, Struck Original */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-base font-bold text-gray-900">
-              {formatPrice(product.price)}
-            </span>
-            {product.originalPrice && product.originalPrice > product.price && (
-              <>
-                <span className="text-xs text-gray-500 line-through">
+          {/* Price Section - Optimized for visibility */}
+          <div className="space-y-1 mt-1">
+            {/* Row 1: Current and Original Price */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-base font-bold text-gray-900 leading-none">
+                {formatPrice(product.price)}
+              </span>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <span className="text-xs text-gray-500 line-through leading-none">
                   {formatPrice(product.originalPrice)}
                 </span>
-              </>
-            )}
+              )}
+            </div>
+
+            {/* Row 2: Best Price and Discount */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <p className="text-[11px] text-gray-600 leading-none">
+                Best Price: <span className="font-bold text-gray-900">{formatPrice(Math.round(product.price * 0.9))}</span>
+              </p>
+              {discountPercentage > 0 && (
+                <span className="text-[11px] font-bold text-orange-600 whitespace-nowrap leading-none">
+                  {discountPercentage}% OFF
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Add to Bag Button */}

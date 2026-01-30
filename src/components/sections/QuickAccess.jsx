@@ -64,7 +64,7 @@ function QuickAccess() {
                 <img 
                   src={quickAccessCards[0].image} 
                   alt={quickAccessCards[0].title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
                     e.target.style.display = 'none'
                   }}
@@ -101,7 +101,7 @@ function QuickAccess() {
                 <img 
                   src={quickAccessCards[1].image} 
                   alt={quickAccessCards[1].title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-fill group-hover:scale-105 transition-transform duration-300"
                   onError={(e) => {
                     e.target.style.display = 'none'
                   }}

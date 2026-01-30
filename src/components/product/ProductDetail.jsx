@@ -985,7 +985,7 @@ const ProductDetail = ({ product }) => {
               placeholder="Enter PIN Code"
               value={pinCode}
               onChange={(e) => setPinCode(e.target.value)}
-              className="flex-1 px-4 py-3 border border-yellow-200 bg-white rounded-lg focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-sm"
+              className="flex-1 px-4 py-3 border text-gray-700 border-yellow-200 bg-white rounded-lg focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-sm"
               suppressHydrationWarning
             />
             <button className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg transition-colors text-sm focus:outline-none shadow-md hover:shadow-lg" suppressHydrationWarning>

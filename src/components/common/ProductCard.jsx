@@ -449,31 +449,32 @@ const ProductCard = ({
             {product.name}
           </h3>
 
-          {/* Price Section - Single Line */}
-          <div className="flex items-center gap-2 min-w-0 overflow-hidden">
-            <span className={`${textColorClasses.price} truncate`}>
-              ₹{product.price?.toLocaleString('en-IN') || '0'}
-            </span>
-            {product.originalPrice && (
-              <>
-                <span className={`${textColorClasses.originalPrice} truncate`}>
+          {/* Price Section - Optimized for visibility */}
+          <div className="space-y-1">
+            {/* Price and Original Price Row */}
+            <div className="flex items-center gap-2">
+              <span className={textColorClasses.price}>
+                ₹{product.price?.toLocaleString('en-IN') || '0'}
+              </span>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <span className={textColorClasses.originalPrice}>
                   ₹{product.originalPrice.toLocaleString('en-IN')}
                 </span>
-                {discountPercentage && (
-                  <span className={`${textColorClasses.discount} truncate`}>
-                    {discountPercentage}% OFF
-                  </span>
-                )}
-              </>
-            )}
-          </div>
+              )}
+            </div>
 
-          {/* Best Price - Single Line */}
-          {product.originalPrice && (
-            <p className={textColorClasses.bestPrice}>
-              Best Price: <span className={textColorClasses.bestPriceValue}>₹{bestPrice.toLocaleString('en-IN')}</span>
-            </p>
-          )}
+            {/* Best Price and Discount Row */}
+            <div className="flex items-center gap-3">
+              <p className={textColorClasses.bestPrice}>
+                Best Price: <span className={textColorClasses.bestPriceValue}>₹{bestPrice.toLocaleString('en-IN')}</span>
+              </p>
+              {discountPercentage && (
+                <span className={`${textColorClasses.discount} whitespace-nowrap`}>
+                  {discountPercentage}% OFF
+                </span>
+              )}
+            </div>
+          </div>
 
           {/* Add to Bag Button */}
           {showAddToBag && (

@@ -3,48 +3,49 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
+import Image from 'next/image'
 
 const priceSpotCategories = [
   {
     id: 1,
     name: 'Sweatshirts',
     price: 'UNDER ₹799',
-    image: '👕',
+    image: '/image-the-price-spot/sweatshirt.jpg',
     href: '/price-spot/sweatshirt-under-799',
   },
   {
     id: 2,
     name: 'Tshirts',
     price: 'UNDER ₹299',
-    image: '👔',
+    image: '/image-the-price-spot/t-shirt.jpg',
     href: '/price-spot/tshirt-under-299',
   },
   {
     id: 3,
     name: 'Tracksuits',
     price: 'UNDER ₹899',
-    image: '🏃',
+    image: '/image-the-price-spot/tracesuit.jpg',
     href: '/price-spot/tracksuit-under-899',
   },
   {
     id: 4,
     name: 'Sweaters',
     price: 'UNDER ₹599',
-    image: '🧥',
+    image: '/image-the-price-spot/sweater.jpg',
     href: '/price-spot/sweater-under-599',
   },
   {
     id: 5,
     name: 'Kurta Sets',
     price: 'UNDER ₹599',
-    image: '👗',
+    image: '/image-the-price-spot/kurta-set.jpg',
     href: '/price-spot/kurta-set-under-599',
   },
   {
     id: 6,
     name: 'Face Wash and Cleanser',
     price: 'UNDER ₹199',
-    image: '🧴',
+    image: '/image-the-price-spot/personal-care-1.jpg',
     href: '/price-spot/face-wash-under-199',
   },
 ]
@@ -106,8 +107,14 @@ function PriceSpot() {
             >
               <div className="bg-white border-2 border-yellow-400 rounded-lg overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md active:scale-95">
                 {/* Product Image Area */}
-                <div className="bg-gray-50 h-48 flex items-center justify-center">
-                  <span className="text-6xl">{category.image}</span>
+                <div className="bg-gray-50 flex items-center justify-center">
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    width={160}
+                    height={160}
+                    className="object-cover"
+                  />
                 </div>
                 {/* Price Banner */}
                 <div className="bg-orange-500 px-3 py-2.5 min-h-[60px] flex flex-col justify-center">

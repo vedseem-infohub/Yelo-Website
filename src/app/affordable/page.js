@@ -228,7 +228,7 @@ export default function AffordablePage() {
     <PageWrapper showLoader={false}>
       <div className="min-h-screen bg-gray-50">
         {/* Bright Hero Banner */}
-        <section className="relative w-full bg-gradient-to-r from-pink-500 via-orange-500 to-red-500 py-8 md:py-12">
+        <section className="relative opacity-0 w-full bg-gradient-to-r from-pink-500 via-orange-500 to-red-500 py-8 md:py-12">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-2">
               Under ₹999

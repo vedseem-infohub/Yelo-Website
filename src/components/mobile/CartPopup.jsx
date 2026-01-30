@@ -157,7 +157,7 @@ function CartPopup() {
           bg-[#FFC907]
           border-2 border-white
           rounded-full
-          px-3 py-2.5
+          px-2 py-2.5
           md:hidden
           flex items-center gap-3
           shadow-lg

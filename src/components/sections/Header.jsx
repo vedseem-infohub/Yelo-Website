@@ -311,14 +311,18 @@ function Header() {
             opacity: pathname === '/' ? headerHeight : 0,
             transition: 'height 0.15s linear, opacity 0.15s linear',
             overflow: 'hidden',
+            backgroundImage: 'url(/head1.jpg)',
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
           }}
         >
           {/* Row 1: Top Information Section: Logo + Location */}
-          <div className={`px-4 py-2.5 border-b ${headerBorderClass} flex items-center justify-between`}>
+          <div className={`px-4 py-2.5 flex items-center justify-between`}>
             {/* Logo - Left Corner */}
             <Link href="/" className="flex items-center group shrink-0">
               <div className="relative">
-                <h1 className={`text-2xl font-extrabold bg-gradient-to-r from-yellow-500 via-yellow-600 to-amber-600 bg-clip-text text-transparent drop-shadow-sm ${
+                <h1 className={`text-2xl font-bold bg-gradient-to-r from-yellow-500 via-yellow-600 to-amber-600 bg-clip-text text-transparent drop-shadow-sm ${
                   isLuxuryPage ? 'opacity-90' : ''
                 }`}>
                   YEAHLO
@@ -356,10 +360,10 @@ function Header() {
           </div>
 
           {/* Row 2: Price Range Buttons (Luxury & Affordable) */}
-          <div className={`flex items-center gap-3 px-4 py-2 border-b ${headerBorderClass} ${
+          <div className={`flex items-center gap-3 px-4 py-2 ${
             isLuxuryPage 
               ? 'bg-gradient-to-r from-gray-800/50 to-gray-900/50' 
-              : 'bg-gradient-to-r from-gray-50 to-white'
+              : ''
           }`}>
             <button
               suppressHydrationWarning={true}
@@ -396,7 +400,7 @@ function Header() {
           </div>
         </div>
        
-       <div style={{backgroundImage: 'url(/banner5.jpeg)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
+       <div style={{backgroundImage: 'url(/head2.jpg)', backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
         {/* Row 3: Primary Header Row: Search (60%) + Icons (40%) - Always Visible */}
         <div className={`px-4 py-2.5 flex items-center gap-3`}>
           {/* Search Bar - 60% width */}
@@ -515,8 +519,8 @@ function Header() {
               {/* Logo - Left Corner */}
               <Link href="/" className="flex items-center group shrink-0">
                 <div className="relative">
-                  <h1 className="text-3xl font-extrabold bg-gradient-to-r from-yellow-500 via-yellow-600 to-amber-600 bg-clip-text text-transparent drop-shadow-sm">
-                    Yelo
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-500 via-yellow-600 to-amber-600 bg-clip-text text-transparent drop-shadow-sm">
+                    YEAHLO
                   </h1>
                   <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-yellow-500 to-amber-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
                 </div>
@@ -604,12 +608,6 @@ function Header() {
 
           <div 
             className="sticky top-0 z-40 transition-all duration-300"
-            style={{
-              backgroundImage: 'url(/banner5.jpeg)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
           >
             {/* Row 3: Primary Header Row: Search (60%) + Icons (40%) - Always Visible */}
             <div className={`flex items-center gap-6 py-3 border-b ${headerBorderClass}`}>

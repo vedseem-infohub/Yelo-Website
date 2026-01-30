@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
+import Image from 'next/image'
 
 const brands = [
   { 
@@ -12,7 +13,7 @@ const brands = [
     logo: '👜', 
     offer: 'UP TO 70% OFF',
     tagline: 'Wear It Your Way',
-    image: '👗',
+    image: '/Featured-brand/6.jpg',
     color: 'bg-blue-50'
   },
   { 
@@ -21,7 +22,7 @@ const brands = [
     logo: '💎', 
     offer: 'UP TO 50% OFF',
     tagline: 'Handcrafted In Jaipur',
-    image: '✨',
+    image: '/Featured-brand/5.jpg',
     color: 'bg-pink-50'
   },
   { 
@@ -30,7 +31,7 @@ const brands = [
     logo: '✓', 
     offer: 'UP TO 60% OFF',
     tagline: 'Just Do It',
-    image: '👟',
+    image: '/Featured-brand/4.jpg',
     color: 'bg-gray-100'
   },
   { 
@@ -39,7 +40,7 @@ const brands = [
     logo: '✓', 
     offer: 'UP TO 55% OFF',
     tagline: 'Impossible Is Nothing',
-    image: '🏃',
+    image: '/Featured-brand/3.jpg',
     color: 'bg-gray-100'
   },
   { 
@@ -48,7 +49,7 @@ const brands = [
     logo: '✓', 
     offer: 'UP TO 50% OFF',
     tagline: 'Fast Fashion',
-    image: '👔',
+    image: '/Featured-brand/2.jpg',
     color: 'bg-gray-100'
   },
   { 
@@ -57,7 +58,7 @@ const brands = [
     logo: '✓', 
     offer: 'UP TO 40% OFF',
     tagline: 'Fashion & Quality',
-    image: '👕',
+    image: '/Featured-brand/1.jpg',
     color: 'bg-gray-100'
   },
 ]
@@ -139,8 +140,13 @@ function FeaturedBrands() {
               >
                 <div className="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200 transition-all duration-200 hover:shadow-lg active:scale-95 relative">
                   {/* Brand Image/Background */}
-                  <div className={`${brand.color} h-48 flex items-center justify-center relative overflow-hidden`}>
-                    <span className="text-7xl z-10">{brand.image || brand.logo}</span>
+                  <div className={`${brand.color} h-[280px] flex items-center justify-center relative overflow-hidden`}>
+                    <Image 
+                      src={brand.image} 
+                      alt={brand.name} 
+                      fill
+                      className="object-cover z-0"
+                    />
                     {/* Overlay Gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     {/* Offer Text Overlay */}
@@ -150,7 +156,7 @@ function FeaturedBrands() {
                     </div>
                   </div>
                   {/* Brand Name Strip */}
-                  <div className="bg-white px-4 py-3 border-t border-gray-100">
+                  <div className="px-4 py-3 border-t border-gray-100">
                     <p className="text-sm font-semibold text-gray-900 truncate">{brand.name}</p>
                   </div>
                 </div>
