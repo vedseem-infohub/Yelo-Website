@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
 import ProductCard from '@/components/common/ProductCard'
-import { productAPI } from '@/utils/api'
+import { productAPI, shopAPI } from '@/utils/api'
 import { saveSectionData } from '@/utils/routePersistence'
 
 function TrendingProducts() {
@@ -12,12 +12,14 @@ function TrendingProducts() {
   const [trendingProducts, setTrendingProducts] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
-  // Fetch trending products from backend API
+  // Fetch trending products from backend API (Affordable Shop)
   useEffect(() => {
     const fetchTrendingProducts = async () => {
       try {
         setIsLoading(true)
-        const response = await productAPI.getTrending(24) // Fetch 24 trending products
+        // Use shopAPI to get affordable products
+        const response = await shopAPI.getProducts('affordable', { limit: 24 }) 
+        
         if (response && response.success && response.data) {
           // Sort by newest first (backend already sorts, but ensure it's correct)
           const sorted = response.data.sort((a, b) => {
@@ -33,6 +35,7 @@ function TrendingProducts() {
           setTrendingProducts([])
         }
       } catch (error) {
+        console.error("Error fetching trending products:", error)
         setTrendingProducts([])
       } finally {
         setIsLoading(false)

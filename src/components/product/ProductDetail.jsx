@@ -100,7 +100,9 @@ const ProductDetail = ({ product }) => {
           setApiRelatedProducts(prev => {
             // Avoid duplicates
             const existingIds = new Set(prev.map(p => p._id || p.id))
-            const newProducts = filtered.filter(p => !existingIds.has(p._id || p.id))
+            // Filter out luxury items (items with brand)
+            const nonLuxuryNewProducts = filtered.filter(p => !p.brand || p.brand.trim() === '')
+            const newProducts = nonLuxuryNewProducts.filter(p => !existingIds.has(p._id || p.id))
             return [...prev, ...newProducts]
           })
 
@@ -258,7 +260,10 @@ const ProductDetail = ({ product }) => {
       const shopProducts = getShopProducts(sourceShopSlug) || []
       const filtered = shopProducts.filter((p) => {
         const pId = p._id || p.id
-        return pId !== currentProductId // Exclude current product
+        // Exclude current product and luxury items
+        if (pId === currentProductId) return false
+        if (p.brand && p.brand.trim() !== '') return false // Exclude luxury
+        return true
       })
 
       // Ensure at least 8 products (or as many as available)
@@ -274,6 +279,10 @@ const ProductDetail = ({ product }) => {
         if (pId === currentProductId) return false
 
         const pShops = p.assignedShops || []
+        
+        // Exclude luxury items
+        if (p.brand && p.brand.trim() !== '') return false
+
         return pShops.some(shopSlug => currentProductShops.includes(shopSlug))
       })
 
@@ -291,6 +300,9 @@ const ProductDetail = ({ product }) => {
       if (vendorSlug && p.vendorSlug === vendorSlug) return true
       if (!vendorSlug) {
         const pCategory = (p.brand && p.brand.trim() !== '') ? 'LUXURY' : 'AFFORDABLE'
+        // Ensure we don't show luxury items in related
+        if (pCategory === 'LUXURY') return false
+        
         return pCategory === majorCategory
       }
       return false
@@ -894,6 +906,25 @@ const ProductDetail = ({ product }) => {
                 </span>
               </>
             )}
+          </div>
+
+          {/* Best Price (UPI) */}
+          <div className="flex items-center gap-3 mb-6 bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-xl border border-green-100 shadow-sm">
+            <div className="bg-green-100 p-2 rounded-full shadow-inner">
+              <Check className="w-4 h-4 text-green-600 stroke-[3]" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-wider text-green-800 font-bold mb-0.5">Best Price</p>
+              <div className="flex items-baseline gap-2">
+                <p className="text-xl font-bold text-green-700">₹{Math.floor(product.price * 0.9)}</p>
+                <p className="text-xs text-green-600 font-medium">with UPI</p>
+              </div>
+            </div>
+            <div className="ml-auto text-center">
+              <span className="text-[10px] font-bold text-white bg-green-500 px-2 py-1 rounded-md shadow-sm">
+                EXTRA 10% OFF
+              </span>
+            </div>
           </div>
         </div>
       </div>
