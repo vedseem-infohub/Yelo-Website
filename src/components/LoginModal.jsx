@@ -5,7 +5,7 @@ import { X, Phone, Shield, ArrowRight } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
-import SetupAccountModal from "./SetupAccountModal";
+import SetupAccountModal_mail from "./SetupAccountModal_mail";
 import LocationModal from "./LocationModal";
 
 export default function LoginModal({ isOpen, setIsOpen }) {
@@ -261,8 +261,8 @@ export default function LoginModal({ isOpen, setIsOpen }) {
       </div>
       </div>
       
-      {/* Setup Account Modal */}
-      <SetupAccountModal 
+      {/* Setup Account Modal (email+phone flow) */}
+      <SetupAccountModal_mail 
         isOpen={showSetupModal} 
         setIsOpen={setShowSetupModal} 
       />

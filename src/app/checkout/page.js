@@ -10,7 +10,7 @@ import toast from 'react-hot-toast'
 import PageWrapper from '@/components/common/PageWrapper'
 import { motion, AnimatePresence } from 'framer-motion'
 import LocationModal from '@/components/LocationModal'
-import SetupAccountModal from '@/components/SetupAccountModal'
+import SetupAccountModal_mail from '@/components/SetupAccountModal_mail'
 import { orderAPI, paymentAPI } from '@/utils/api'
 
 const STEPS = [
@@ -130,10 +130,10 @@ export default function CheckoutPage() {
   }, []);
 
   const handlePlaceOrder = async () => {
-    // Validate user has a name (required for orders)
-    if (!backendUser || !backendUser.name || !backendUser.name.trim()) {
+    // Validate user has a name and phone (required for orders)
+    if (!backendUser || !backendUser.name || !backendUser.name.trim() || !backendUser.phone) {
       setShowSetupAccountModal(true)
-      toast.error('Please provide your name to place an order')
+      toast.error('Please complete your profile to place an order')
       return
     }
 
@@ -893,6 +893,12 @@ export default function CheckoutPage() {
             setBackendUser(user);
           }
         }}
+      />
+
+      {/* Setup Account (email+phone) modal for completing profile before placing order */}
+      <SetupAccountModal_mail
+        isOpen={showSetupAccountModal}
+        setIsOpen={setShowSetupAccountModal}
       />
     </PageWrapper>
   )

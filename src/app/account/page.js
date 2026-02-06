@@ -17,7 +17,7 @@ import Link from "next/link";
 import MobileBottomNav from "@/components/navigation/MobileBottomNav";
 import PageWrapper from "@/components/common/PageWrapper";
 import { useAuth } from "@/contexts/AuthContext";
-import SetupAccountModal from "@/components/SetupAccountModal";
+import SetupAccountModal_mail from "@/components/SetupAccountModal_mail";
 import LocationModal from "@/components/LocationModal";
 import { orderAPI } from "@/utils/api";
 
@@ -93,7 +93,6 @@ export default function AccountPage() {
       </PageWrapper>
     );
   }
-
 
   return (
     <PageWrapper>
@@ -308,15 +307,13 @@ export default function AccountPage() {
         <MobileBottomNav />
       </div>
       
-      {/* Setup Account Modal - shown when profile is incomplete or editing */}
-      <SetupAccountModal 
-        isOpen={showSetupModal} 
+      {/* Setup Account Modal (email+phone flow only) */}
+      <SetupAccountModal_mail
+        isOpen={showSetupModal}
         setIsOpen={(value) => {
           setShowSetupModal(value);
           setIsEditMode(false);
         }}
-        initialData={isEditMode ? backendUser : null}
-        isEditMode={isEditMode}
       />
       
       {/* Location Modal for editing address */}

@@ -7,7 +7,7 @@ import { useCart } from '@/contexts/CartContext'
 import { useWishlist } from '@/contexts/WishlistContext'
 import { useProducts } from '@/contexts/ProductsContext'
 import { useAuth } from '@/contexts/AuthContext'
-import SetupAccountModal from '@/components/SetupAccountModal'
+import SetupAccountModal_mail from '@/components/SetupAccountModal_mail'
 import toast from 'react-hot-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
@@ -367,10 +367,10 @@ const ProductDetail = ({ product }) => {
       return
     }
 
-    // Validate user has a name (required for orders)
-    if (!backendUser.name || !backendUser.name.trim()) {
+    // Validate user has a name and phone (required for orders)
+    if (!backendUser.name || !backendUser.name.trim() || !backendUser.phone) {
       setShowSetupAccountModal(true)
-      toast.error('Please provide your name to place an order')
+      toast.error('Please complete your profile to place an order')
       return
     }
 
@@ -869,13 +869,28 @@ const ProductDetail = ({ product }) => {
         </div>
       </div>
 
+      {/* Setup Account (email+phone) modal for completing profile before buying */}
+      <SetupAccountModal_mail
+        isOpen={showSetupAccountModal}
+        setIsOpen={setShowSetupAccountModal}
+      />
+
       {/* Product Info Section - Below Image */}
       <div className="px-5 pt-6 pb- bg-white">
         {/* Brand and Product Name */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 leading-tight mb-1">{product.name}</h1>
-          {product.brand && (
-            <p className="text-base font-medium text-gray-600 mb-3">{product.brand}</p>
+          <h1 className="text-xl font-bold text-gray-900 leading-tight mb-1">
+            {product.brand && (
+              <span className="text-gray-600 font-medium mr-2">{product.brand}</span>
+            )}
+            {product.name}
+          </h1>
+          {(product.vendorName || product.vendorSlug) && (
+            <p className="text-xs text-gray-500 mb-3 font-medium">
+              Sold by <span className="text-gray-700 capitalize">
+                {product.vendorName || product.vendorSlug?.replace(/-/g, ' ')}
+              </span>
+            </p>
           )}
 
           {/* Rating and Reviews */}
