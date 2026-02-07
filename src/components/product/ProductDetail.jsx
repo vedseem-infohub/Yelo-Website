@@ -31,6 +31,7 @@ const ProductDetail = ({ product }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0]?.name || '')
   const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || '')
+  const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
   const [pinCode, setPinCode] = useState('')
   const [isAddingToCart, setIsAddingToCart] = useState(false)
@@ -330,6 +331,33 @@ const ProductDetail = ({ product }) => {
     }
   }
 
+  // Calculate stock at component level
+  const stock = Number(product.stock) || 0
+  const isOutOfStock = stock === 0
+  const canAddQuantity = quantity <= stock
+
+  // Handle quantity change
+  const handleQuantityChange = (newQuantity) => {
+    const numQuantity = Number(newQuantity) || 1
+    if (numQuantity < 1) {
+      setQuantity(1)
+    } else if (numQuantity > stock) {
+      setQuantity(stock)
+      toast.error(`Only ${stock} item${stock === 1 ? '' : 's'} available`)
+    } else {
+      setQuantity(numQuantity)
+    }
+  }
+
+  // Reset quantity when stock changes or product changes
+  useEffect(() => {
+    if (quantity > stock && stock > 0) {
+      setQuantity(stock)
+    } else if (stock === 0) {
+      setQuantity(1)
+    }
+  }, [stock, product._id, product.id])
+
   const handleAddToCart = async () => {
     if (!backendUser) {
       openLoginModal()
@@ -337,8 +365,14 @@ const ProductDetail = ({ product }) => {
     }
 
     // Check if product is out of stock
-    if (product.stock === 0 || product.stock === '0') {
-      alert('This product is currently out of stock.')
+    if (stock === 0) {
+      toast.error('This product is currently out of stock.')
+      return
+    }
+
+    // Check if quantity exceeds stock
+    if (quantity > stock) {
+      toast.error(`Only ${stock} item${stock === 1 ? '' : 's'} remaining. Please select a lower quantity.`)
       return
     }
 
@@ -350,6 +384,7 @@ const ProductDetail = ({ product }) => {
     addToCart(product, {
       size: selectedSize || product.sizes?.[0] || 'M',
       color: selectedColor || (typeof product.colors?.[0] === 'string' ? product.colors[0] : product.colors?.[0]?.name || 'White'),
+      quantity: quantity
     })
 
     setIsAddingToCart(false)
@@ -375,8 +410,14 @@ const ProductDetail = ({ product }) => {
     }
 
     // Check if product is out of stock
-    if (product.stock === 0 || product.stock === '0') {
-      alert('This product is currently out of stock.')
+    if (stock === 0) {
+      toast.error('This product is currently out of stock.')
+      return
+    }
+
+    // Check if quantity exceeds stock
+    if (quantity > stock) {
+      toast.error(`Only ${stock} item${stock === 1 ? '' : 's'} remaining. Please select a lower quantity.`)
       return
     }
 
@@ -384,14 +425,12 @@ const ProductDetail = ({ product }) => {
     addToCart(product, {
       size: selectedSize || product.sizes?.[0] || 'M',
       color: selectedColor || (typeof product.colors?.[0] === 'string' ? product.colors[0] : product.colors?.[0]?.name || 'White'),
+      quantity: quantity,
       silent: true,
     })
     // Navigate to checkout page
     router.push('/checkout')
   }
-
-  // Check if product is out of stock
-  const isOutOfStock = product.stock === 0 || product.stock === '0'
 
   const handleShare = async () => {
     const productUrl = typeof window !== 'undefined' ? window.location.href : ''
@@ -1002,11 +1041,11 @@ const ProductDetail = ({ product }) => {
                 <button
                   key={size}
                   onClick={() => handleSizeSelect(size)}
-                  disabled={size === 'XXL' && product.stock < 5}
+                  disabled={size === 'XXL' && stock < 5}
                   className={`py-3 rounded-lg border-2 font-semibold text-sm transition-all focus:outline-none ${selectedSize === size
                       ? 'border-yellow-500 bg-yellow-500 text-white shadow-md shadow-yellow-200'
                       : 'border-gray-200 text-gray-700 hover:border-yellow-300 hover:bg-yellow-50'
-                    } ${size === 'XXL' && product.stock < 5
+                    } ${size === 'XXL' && stock < 5
                       ? 'opacity-50 cursor-not-allowed'
                       : ''
                     }`}
@@ -1018,6 +1057,67 @@ const ProductDetail = ({ product }) => {
             </div>
           </div>
         )}
+
+        {/* Quantity Selection & Stock Remaining */}
+        <div className="border-t border-yellow-100 pt-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide flex items-center gap-2">
+                <span className="w-1 h-4 bg-yellow-500 rounded-full"></span>
+                Quantity
+              </h3>
+              {/* Stock Remaining Label */}
+              {stock > 0 && (
+                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  stock <= 3 
+                    ? 'bg-red-100 text-red-700 border border-red-300' 
+                    : stock <= 10 
+                    ? 'bg-orange-100 text-orange-700 border border-orange-300'
+                    : 'bg-green-100 text-green-700 border border-green-300'
+                }`}>
+                  {stock} {stock === 1 ? 'item' : 'items'} remaining
+                </span>
+              )}
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <div className="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">
+              <button
+                onClick={() => handleQuantityChange(quantity - 1)}
+                disabled={quantity <= 1 || isOutOfStock}
+                className="px-4 py-2 bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold text-gray-700"
+                suppressHydrationWarning
+              >
+                −
+              </button>
+              <input
+                type="number"
+                min="1"
+                max={stock}
+                value={quantity}
+                onChange={(e) => handleQuantityChange(e.target.value)}
+                disabled={isOutOfStock}
+                className="w-16 px-3 py-2 text-center font-semibold text-gray-900 border-x border-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                suppressHydrationWarning
+              />
+              <button
+                onClick={() => handleQuantityChange(quantity + 1)}
+                disabled={quantity >= stock || isOutOfStock}
+                className="px-4 py-2 bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold text-gray-700"
+                suppressHydrationWarning
+              >
+                +
+              </button>
+            </div>
+            
+            {!canAddQuantity && stock > 0 && (
+              <p className="text-xs text-red-600 font-medium">
+                Maximum {stock} {stock === 1 ? 'item' : 'items'} available
+              </p>
+            )}
+          </div>
+        </div>
 
         {/* Delivery Options */}
         <div className="border-t border-yellow-100 pt-5">
@@ -1255,13 +1355,13 @@ const ProductDetail = ({ product }) => {
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t-2 border-yellow-200 px-4 py-2 z-40 flex gap-3 shadow-lg">
         <motion.button
           onClick={handleAddToCart}
-          disabled={isAddingToCart || isAddedToCart || isOutOfStock}
-          className={`flex-1 px-4 py-2.5 border-2 font-bold rounded-xl transition-colors relative overflow-hidden disabled:opacity-75 disabled:cursor-not-allowed focus:outline-none shadow-sm text-sm ${isOutOfStock
+          disabled={isAddingToCart || isAddedToCart || isOutOfStock || !canAddQuantity}
+          className={`flex-1 px-4 py-2.5 border-2 font-bold rounded-xl transition-colors relative overflow-hidden disabled:opacity-75 disabled:cursor-not-allowed focus:outline-none shadow-sm text-sm ${isOutOfStock || !canAddQuantity
               ? 'border-gray-300 text-gray-500 bg-gray-100'
               : 'border-yellow-500 text-yellow-600 hover:bg-yellow-50'
             }`}
           suppressHydrationWarning
-          whileTap={!isOutOfStock ? { scale: 0.98 } : {}}
+          whileTap={!isOutOfStock && canAddQuantity ? { scale: 0.98 } : {}}
           animate={isAddedToCart ? { scale: [1, 1.05, 1] } : {}}
           transition={{ duration: 0.3 }}
         >
@@ -1316,15 +1416,15 @@ const ProductDetail = ({ product }) => {
         </motion.button>
         <motion.button
           onClick={handleBuyNow}
-          disabled={isOutOfStock}
-          className={`flex-1 py-2.5 px-4 font-bold rounded-xl transition-all focus:outline-none shadow-md text-sm ${isOutOfStock
+          disabled={isOutOfStock || !canAddQuantity}
+          className={`flex-1 py-2.5 px-4 font-bold rounded-xl transition-all focus:outline-none shadow-md text-sm ${isOutOfStock || !canAddQuantity
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
               : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white hover:shadow-lg'
             }`}
           suppressHydrationWarning
-          whileTap={!isOutOfStock ? { scale: 0.98 } : {}}
+          whileTap={!isOutOfStock && canAddQuantity ? { scale: 0.98 } : {}}
         >
-          {isOutOfStock ? 'Out of Stock' : 'Buy Now'}
+          {isOutOfStock || !canAddQuantity ? (isOutOfStock ? 'Out of Stock' : 'Invalid Quantity') : 'Buy Now'}
         </motion.button>
       </div>
 
