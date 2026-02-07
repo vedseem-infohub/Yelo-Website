@@ -9,6 +9,7 @@ import { useWishlist } from '@/contexts/WishlistContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import PageWrapper from '@/components/common/PageWrapper'
+import toast from 'react-hot-toast'
 
 export default function CartPage() {
   const router = useRouter()
@@ -31,6 +32,14 @@ export default function CartPage() {
 
   const handleUpdateQuantity = (item, change) => {
     const newQuantity = item.quantity + change
+
+    // --- STOCK CHECK START ---
+    if (change > 0 && item.stock && newQuantity > item.stock) {
+      toast.error(`Cannot add more. Only ${item.stock} items available.`)
+      return
+    }
+    // --- STOCK CHECK END ---
+
     if (newQuantity >= 1) {
       updateQuantity(item.id, item.size, item.color, change)
     }
@@ -172,7 +181,7 @@ export default function CartPage() {
                   const discountPercentage = item.originalPrice && item.originalPrice > item.price
                     ? Math.round(((item.originalPrice - item.price) / item.originalPrice) * 100)
                     : 0
-                  
+
                   return (
                     <motion.div
                       key={`${item.id}-${item.size}-${item.color}`}
@@ -203,7 +212,7 @@ export default function CartPage() {
                           <p className="text-xs font-semibold text-gray-500 mb-1 truncate">
                             {item.brand || 'Brand'}
                           </p>
-                          
+
                           {/* Title */}
                           <h3 className="text-sm md:text-base font-semibold text-gray-900 line-clamp-2 mb-2 leading-tight">
                             {item.name}

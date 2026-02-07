@@ -81,22 +81,22 @@ const ProductDetail = ({ product }) => {
     const fetchRelatedProducts = async () => {
       const category = product?.category
       const subcategory = product?.subcategory
-      
+
       if (!category || !hasMoreRelated || !readyToLoadRelated) return
 
       try {
         setLoadingRelated(true)
         // Use limit of 5 from API
-        const response = await productAPI.getByCategory(category, subcategory, { 
-          page: relatedPage, 
-          limit: 5 
+        const response = await productAPI.getByCategory(category, subcategory, {
+          page: relatedPage,
+          limit: 5
         })
-        
+
         if (response.success && response.data) {
           const currentId = product._id || product.id
           // Filter out the current product
           const filtered = response.data.filter(p => (p._id || p.id) !== currentId)
-          
+
           setApiRelatedProducts(prev => {
             // Avoid duplicates
             const existingIds = new Set(prev.map(p => p._id || p.id))
@@ -109,7 +109,7 @@ const ProductDetail = ({ product }) => {
           // Check if there are more products to fetch
           const totalFetched = (relatedPage - 1) * 5 + response.data.length
           const totalAvailable = response.pagination?.total || 0
-          
+
           if (totalFetched < totalAvailable && response.data.length > 0) {
             // Trigger next page fetch after a short delay for "progressive" feel
             setTimeout(() => {
@@ -279,7 +279,7 @@ const ProductDetail = ({ product }) => {
         if (pId === currentProductId) return false
 
         const pShops = p.assignedShops || []
-        
+
         // Exclude luxury items
         if (p.brand && p.brand.trim() !== '') return false
 
@@ -302,7 +302,7 @@ const ProductDetail = ({ product }) => {
         const pCategory = (p.brand && p.brand.trim() !== '') ? 'LUXURY' : 'AFFORDABLE'
         // Ensure we don't show luxury items in related
         if (pCategory === 'LUXURY') return false
-        
+
         return pCategory === majorCategory
       }
       return false
@@ -336,11 +336,29 @@ const ProductDetail = ({ product }) => {
       return
     }
 
-    // Check if product is out of stock
+    // Check if product is out of stock (Basic check)
     if (product.stock === 0 || product.stock === '0') {
       alert('This product is currently out of stock.')
       return
     }
+
+    // --- QUANTITY RESTRICTION START ---
+    // Calculate current quantity of this product in cart
+    const currentCartItem = (cartItems || []).find(
+      (item) =>
+        (item.productId?._id === (product._id || product.id) || item.id === (product._id || product.id)) &&
+        item.size === (selectedSize || product.sizes?.[0] || 'M') &&
+        item.color === (selectedColor || (typeof product.colors?.[0] === 'string' ? product.colors[0] : product.colors?.[0]?.name || 'White'))
+    )
+
+    const currentQty = currentCartItem ? currentCartItem.quantity : 0
+
+    // Check if adding 1 more would exceed stock
+    if (currentQty + 1 > product.stock) {
+      toast.error(`Cannot add more. Only ${product.stock} items available.`)
+      return
+    }
+    // --- QUANTITY RESTRICTION END ---
 
     setIsAddingToCart(true)
 
@@ -379,6 +397,22 @@ const ProductDetail = ({ product }) => {
       alert('This product is currently out of stock.')
       return
     }
+
+    // --- QUANTITY RESTRICTION START ---
+    const currentCartItem = (cartItems || []).find(
+      (item) =>
+        (item.productId?._id === (product._id || product.id) || item.id === (product._id || product.id)) &&
+        item.size === (selectedSize || product.sizes?.[0] || 'M') &&
+        item.color === (selectedColor || (typeof product.colors?.[0] === 'string' ? product.colors[0] : product.colors?.[0]?.name || 'White'))
+    )
+
+    const currentQty = currentCartItem ? currentCartItem.quantity : 0
+
+    if (currentQty + 1 > product.stock) {
+      toast.error(`Cannot add more. Only ${product.stock} items available.`)
+      return
+    }
+    // --- QUANTITY RESTRICTION END ---
 
     // Add to cart first (silently)
     addToCart(product, {
@@ -857,8 +891,8 @@ const ProductDetail = ({ product }) => {
                     goToImage(index)
                   }}
                   className={`rounded-full transition-all duration-300 focus:outline-none ${index === selectedImageIndex
-                      ? 'bg-yellow-500 w-8 h-2 shadow-md shadow-yellow-200'
-                      : 'bg-white/60 hover:bg-white/80 w-2 h-2'
+                    ? 'bg-yellow-500 w-8 h-2 shadow-md shadow-yellow-200'
+                    : 'bg-white/60 hover:bg-white/80 w-2 h-2'
                     }`}
                   suppressHydrationWarning
                   aria-label={`Go to image ${index + 1}`}
@@ -966,8 +1000,8 @@ const ProductDetail = ({ product }) => {
                         key={index}
                         onClick={() => setSelectedColor(colorObj.name)}
                         className={`w-14 h-14 rounded-xl border-2 transition-all overflow-hidden shadow-sm focus:outline-none active:scale-95 ${selectedColor === colorObj.name
-                            ? 'border-yellow-500 border-3 scale-110 shadow-lg shadow-yellow-200 ring-2 ring-yellow-100'
-                            : 'border-gray-200 hover:border-yellow-300'
+                          ? 'border-yellow-500 border-3 scale-110 shadow-lg shadow-yellow-200 ring-2 ring-yellow-100'
+                          : 'border-gray-200 hover:border-yellow-300'
                           }`}
                         style={{ backgroundColor: colorObj.value }}
                         title={colorObj.name}
@@ -1004,8 +1038,8 @@ const ProductDetail = ({ product }) => {
                   onClick={() => handleSizeSelect(size)}
                   disabled={size === 'XXL' && product.stock < 5}
                   className={`py-3 rounded-lg border-2 font-semibold text-sm transition-all focus:outline-none ${selectedSize === size
-                      ? 'border-yellow-500 bg-yellow-500 text-white shadow-md shadow-yellow-200'
-                      : 'border-gray-200 text-gray-700 hover:border-yellow-300 hover:bg-yellow-50'
+                    ? 'border-yellow-500 bg-yellow-500 text-white shadow-md shadow-yellow-200'
+                    : 'border-gray-200 text-gray-700 hover:border-yellow-300 hover:bg-yellow-50'
                     } ${size === 'XXL' && product.stock < 5
                       ? 'opacity-50 cursor-not-allowed'
                       : ''
@@ -1217,7 +1251,7 @@ const ProductDetail = ({ product }) => {
               Related Products
             </h3>
             {product?.category && (
-              <Link 
+              <Link
                 href={`/category/${product.category.toLowerCase().replace(/\s+/g, '-')}${product.subcategory ? `/${product.subcategory.toLowerCase().replace(/\s+/g, '-')}` : ''}`}
                 className="text-xs font-bold text-yellow-600 hover:text-yellow-700 flex items-center gap-1 group/link"
               >
@@ -1226,17 +1260,17 @@ const ProductDetail = ({ product }) => {
               </Link>
             )}
           </div>
-          
+
           <div className="flex gap-1 overflow-x-auto pb-4 scrollbar-hide snap-x touch-pan-x">
             {apiRelatedProducts.map((relatedProduct) => (
-              <div 
-                key={relatedProduct._id || relatedProduct.id} 
+              <div
+                key={relatedProduct._id || relatedProduct.id}
                 className="min-w-[150px] w-[150px] sm:min-w-[220px] sm:w-[220px] snap-start"
               >
                 <ProductCard product={relatedProduct} compact={true} />
               </div>
             ))}
-            
+
             {/* Shimmer loading for progressive batches */}
             {loadingRelated && (
               <>
@@ -1257,8 +1291,8 @@ const ProductDetail = ({ product }) => {
           onClick={handleAddToCart}
           disabled={isAddingToCart || isAddedToCart || isOutOfStock}
           className={`flex-1 px-4 py-2.5 border-2 font-bold rounded-xl transition-colors relative overflow-hidden disabled:opacity-75 disabled:cursor-not-allowed focus:outline-none shadow-sm text-sm ${isOutOfStock
-              ? 'border-gray-300 text-gray-500 bg-gray-100'
-              : 'border-yellow-500 text-yellow-600 hover:bg-yellow-50'
+            ? 'border-gray-300 text-gray-500 bg-gray-100'
+            : 'border-yellow-500 text-yellow-600 hover:bg-yellow-50'
             }`}
           suppressHydrationWarning
           whileTap={!isOutOfStock ? { scale: 0.98 } : {}}
@@ -1318,8 +1352,8 @@ const ProductDetail = ({ product }) => {
           onClick={handleBuyNow}
           disabled={isOutOfStock}
           className={`flex-1 py-2.5 px-4 font-bold rounded-xl transition-all focus:outline-none shadow-md text-sm ${isOutOfStock
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-              : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white hover:shadow-lg'
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+            : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white hover:shadow-lg'
             }`}
           suppressHydrationWarning
           whileTap={!isOutOfStock ? { scale: 0.98 } : {}}
@@ -1439,8 +1473,8 @@ const ProductDetail = ({ product }) => {
                     key={index}
                     onClick={(e) => { e.stopPropagation(); setModalImageIndex(index); setImageZoom(1); setImagePosition({ x: 0, y: 0 }); }}
                     className={`h-2 rounded-full transition-all focus:outline-none ${index === modalImageIndex
-                        ? 'bg-yellow-500 w-6'
-                        : 'bg-white/60 hover:bg-white/80 w-2'
+                      ? 'bg-yellow-500 w-6'
+                      : 'bg-white/60 hover:bg-white/80 w-2'
                       }`}
                     suppressHydrationWarning
                   />
