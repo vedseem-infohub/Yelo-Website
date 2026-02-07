@@ -365,8 +365,8 @@ const ProductDetail = ({ product }) => {
     }
 
     // Check if product is out of stock (Basic check)
-    if (product.stock === 0 || product.stock === '0') {
-      alert('This product is currently out of stock.')
+    if (stock === 0) {
+      toast.error('This product is currently out of stock.')
       return
     }
 
@@ -381,9 +381,9 @@ const ProductDetail = ({ product }) => {
 
     const currentQty = currentCartItem ? currentCartItem.quantity : 0
 
-    // Check if adding 1 more would exceed stock
-    if (currentQty + 1 > product.stock) {
-      toast.error(`Cannot add more. Only ${product.stock} items available.`)
+    // Check if adding selected quantity would exceed stock
+    if (currentQty + quantity > product.stock) {
+      toast.error(`Cannot add more`)
       return
     }
     // --- QUANTITY RESTRICTION END ---
@@ -443,8 +443,8 @@ const ProductDetail = ({ product }) => {
 
     const currentQty = currentCartItem ? currentCartItem.quantity : 0
 
-    if (currentQty + 1 > product.stock) {
-      toast.error(`Cannot add more. Only ${product.stock} items available.`)
+    if (currentQty + quantity > product.stock) {
+      toast.error(`Cannot add more. You have ${currentQty} in cart and only ${product.stock} items available.`)
       return
     }
     // --- QUANTITY RESTRICTION END ---
@@ -1071,8 +1071,8 @@ const ProductDetail = ({ product }) => {
                   onClick={() => handleSizeSelect(size)}
                   disabled={size === 'XXL' && stock < 5}
                   className={`py-3 rounded-lg border-2 font-semibold text-sm transition-all focus:outline-none ${selectedSize === size
-                      ? 'border-yellow-500 bg-yellow-500 text-white shadow-md shadow-yellow-200'
-                      : 'border-gray-200 text-gray-700 hover:border-yellow-300 hover:bg-yellow-50'
+                    ? 'border-yellow-500 bg-yellow-500 text-white shadow-md shadow-yellow-200'
+                    : 'border-gray-200 text-gray-700 hover:border-yellow-300 hover:bg-yellow-50'
                     } ${size === 'XXL' && product.stock < 5
                       ? 'opacity-50 cursor-not-allowed'
                       : ''
@@ -1096,19 +1096,18 @@ const ProductDetail = ({ product }) => {
               </h3>
               {/* Stock Remaining Label */}
               {stock > 0 && (
-                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                  stock <= 3 
-                    ? 'bg-red-100 text-red-700 border border-red-300' 
-                    : stock <= 10 
+                <span className={`px-3 py-1 rounded-full text-xs font-bold ${stock <= 3
+                  ? 'bg-red-100 text-red-700 border border-red-300'
+                  : stock <= 10
                     ? 'bg-orange-100 text-orange-700 border border-orange-300'
                     : 'bg-green-100 text-green-700 border border-green-300'
-                }`}>
+                  }`}>
                   {stock} {stock === 1 ? 'item' : 'items'} remaining
                 </span>
               )}
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <div className="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">
               <button
@@ -1138,7 +1137,7 @@ const ProductDetail = ({ product }) => {
                 +
               </button>
             </div>
-            
+
             {!canAddQuantity && stock > 0 && (
               <p className="text-xs text-red-600 font-medium">
                 Maximum {stock} {stock === 1 ? 'item' : 'items'} available
@@ -1385,8 +1384,8 @@ const ProductDetail = ({ product }) => {
           onClick={handleAddToCart}
           disabled={isAddingToCart || isAddedToCart || isOutOfStock}
           className={`flex-1 px-4 py-2.5 border-2 font-bold rounded-xl transition-colors relative overflow-hidden disabled:opacity-75 disabled:cursor-not-allowed focus:outline-none shadow-sm text-sm ${isOutOfStock
-              ? 'border-gray-300 text-gray-500 bg-gray-100'
-              : 'border-yellow-500 text-yellow-600 hover:bg-yellow-50'
+            ? 'border-gray-300 text-gray-500 bg-gray-100'
+            : 'border-yellow-500 text-yellow-600 hover:bg-yellow-50'
             }`}
           suppressHydrationWarning
           whileTap={!isOutOfStock && canAddQuantity ? { scale: 0.98 } : {}}
@@ -1446,8 +1445,8 @@ const ProductDetail = ({ product }) => {
           onClick={handleBuyNow}
           disabled={isOutOfStock}
           className={`flex-1 py-2.5 px-4 font-bold rounded-xl transition-all focus:outline-none shadow-md text-sm ${isOutOfStock
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
-              : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white hover:shadow-lg'
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+            : 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white hover:shadow-lg'
             }`}
           suppressHydrationWarning
           whileTap={!isOutOfStock && canAddQuantity ? { scale: 0.98 } : {}}
