@@ -161,45 +161,59 @@ export default function LuxuryPage() {
                   </p>
 
                   {section.products.length > 0 && (
-                    <div className="pt-8 space-y-6">
+                    <div className="pt-12 grid grid-cols-2 gap-6 md:gap-10">
                       {section.products.map((product, productIndex) => (
                         <div
                           key={product._id || product.id || `luxury-${index}-${productIndex}`}
-                          className="group cursor-pointer"
+                          className="group cursor-pointer flex flex-col"
                           onClick={() => router.push(product.vendorSlug ? `/product/${product.vendorSlug}/${product.baseSlug || product.slug}` : `/product/${product.slug}`)}
                         >
-                          <div className="flex gap-6">
-                            <div className="w-32 h-40 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                              {(() => {
-                                const firstImage = product.images?.[0]
-                                const imageUrl = typeof firstImage === 'string'
-                                  ? firstImage
-                                  : firstImage?.url
-                                return imageUrl ? (
+                          <div className="aspect-[4/5] bg-stone-50 rounded-sm overflow-hidden relative shadow-sm group-hover:shadow-md transition-all duration-700 mb-4">
+                            {(() => {
+                              const firstImage = product.images?.[0]
+                              const imageUrl = typeof firstImage === 'string'
+                                ? firstImage
+                                : firstImage?.url
+                              return imageUrl ? (
+                                <>
                                   <img
                                     src={imageUrl}
                                     alt={product.name}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
                                   />
-                                ) : (
-                                  <div className="w-full h-full flex items-center justify-center">
-                                    <span className="text-4xl">{product.emoji || '👔'}</span>
-                                  </div>
-                                )
-                              })()}
-                            </div>
-                            <div className="flex-1 pt-2">
-                              <div className="text-sm text-gray-500 mb-1">{product.brand}</div>
-                              <h3 className="text-lg font-medium text-gray-900 mb-2 group-hover:text-gray-700 transition-colors">
-                                {product.name}
-                              </h3>
-                              <div className="text-base text-gray-600 font-light">
+                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-700" />
+                                </>
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-stone-100">
+                                  <span className="text-4xl grayscale opacity-40">{product.emoji || '👔'}</span>
+                                </div>
+                              )
+                            })()}
+                          </div>
+                          
+                          <div className="flex-1 space-y-2">
+                            {product.brand && (
+                              <div className="text-[10px] uppercase tracking-[0.2em] text-stone-500 font-medium opacity-80">
+                                {product.brand}
+                              </div>
+                            )}
+                            <h3 
+                              className="text-lg text-stone-900 group-hover:text-stone-600 transition-colors duration-500 line-clamp-1"
+                              style={{ fontFamily: '"Playfair Display", serif' }}
+                            >
+                              {product.name}
+                            </h3>
+                            <div className="text-base text-stone-600 font-light flex items-center justify-between">
+                              <span>
                                 {new Intl.NumberFormat('en-IN', {
                                   style: 'currency',
                                   currency: 'INR',
                                   maximumFractionDigits: 0
                                 }).format(product.price)}
-                              </div>
+                              </span>
+                              <span className="text-[9px] uppercase tracking-wider text-primary opacity-0 group-hover:opacity-100 transition-all duration-500 font-semibold">
+                                View &rarr;
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -234,7 +248,8 @@ export default function LuxuryPage() {
             <button
               onClick={() => router.push('/luxury/shop')}
               className="px-8 py-3 text-sm font-medium text-gray-900 border border-gray-900 hover:bg-gray-900 hover:text-white transition-all duration-300 tracking-wider uppercase"
-            >
+              suppressHydrationWarning
+           >
               Explore Collection
             </button>
           </div>

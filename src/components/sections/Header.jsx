@@ -311,7 +311,7 @@ function Header() {
             opacity: pathname === '/' ? headerHeight : 0,
             transition: 'height 0.15s linear, opacity 0.15s linear',
             overflow: 'hidden',
-            backgroundImage: 'url(/head1.jpg)',
+            backgroundImage: 'url(/header/header1.jpeg)',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
@@ -400,7 +400,7 @@ function Header() {
           </div>
         </div>
        
-       <div style={{backgroundImage: 'url(/head2.jpg)', backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
+       <div style={{backgroundImage: 'url(/header/header2.jpeg)', backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat'}}>
         {/* Row 3: Primary Header Row: Search (60%) + Icons (40%) - Always Visible */}
         <div className={`px-4 py-2.5 flex items-center gap-3`}>
           {/* Search Bar - 60% width */}

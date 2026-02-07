@@ -4,12 +4,11 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const slides = [
-  '/hero1.jpg',
-  '/hero2.jpg',
-  '/hero3.jpg',
-  '/hero4.jpg',
-  '/banner4.jpeg',
-  '/hero6.jpg',
+  '/hero/1.jpeg',
+  '/hero/1.5.jpeg',
+  '/hero/2.jpeg',
+  '/hero/3.jpeg',
+  '/hero/4.jpeg',
 ]
 
 function Hero() {

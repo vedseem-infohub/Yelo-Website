@@ -887,7 +887,7 @@ const ProductDetail = ({ product }) => {
           </h1>
           {(product.vendorName || product.vendorSlug) && (
             <p className="text-xs text-gray-500 mb-3 font-medium">
-              Sold by <span className="text-gray-700 capitalize">
+              Seller : <span className="text-gray-700 capitalize">
                 {product.vendorName || product.vendorSlug?.replace(/-/g, ' ')}
               </span>
             </p>

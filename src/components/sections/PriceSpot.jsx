@@ -82,9 +82,15 @@ function PriceSpot() {
   return (
     <div className="w-full bg-white py-6">
       {/* The Price Spot Banner */}
-      <div className="bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 px-4 py-4 mb-4">
+      <div className="px-4 py-8 mb-4"
+       style={{
+        backgroundImage: 'url("/image-the-price-spot/the-price-spot.jpeg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+       }}
+      >
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-2">The Price Spot</h2>
             <div className="bg-gray-800 opacity-0 rounded-lg px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-700 transition-colors">
               <p className="text-white text-sm font-medium">Deals That Keep You Coming Back</p>
               <ChevronRight className="w-5 h-5 text-white" />

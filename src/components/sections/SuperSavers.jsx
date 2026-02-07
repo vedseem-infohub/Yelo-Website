@@ -60,8 +60,15 @@ function SuperSavers() {
   return (
     <div className="w-full bg-white py-6">
       {/* SUPER SAVERS Banner */}
-      <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-pink-600 px-4 py-4 mb-4 rounded-t-2xl">
-        <div className="max-w-7xl mx-auto">
+      <div className="px-4 py-4 mb-4 "
+           style={{
+            backgroundImage: 'url("/super-saver-offer-images/super-saver.jpeg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+           }}
+      >
+        <div className="max-w-7xl mx-auto opacity-0">
           <h2 className="text-2xl font-bold text-white mb-1">SUPER SAVERS</h2>
           {/* <Link href="/super-savers"> */}
             <div className="flex items-center gap-2 cursor-pointer hover:opacity-90 transition-opacity">
