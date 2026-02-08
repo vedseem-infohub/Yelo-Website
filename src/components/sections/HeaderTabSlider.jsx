@@ -9,7 +9,7 @@ const tabs = [
   { name: 'Home', path: '/', id: 'home' },
   { name: 'Categories', path: '/categories', id: 'categories' },
   { name: 'Trending', path: '/trending', id: 'trending' },
-  { name: 'Brands', path: '/brands', id: 'brands' },
+  // { name: 'Brands', path: '/brands', id: 'brands' },
 ]
 
 export default function HeaderTabSlider({ 

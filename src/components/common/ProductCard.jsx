@@ -476,6 +476,20 @@ const ProductCard = ({
             </div>
           </div>
 
+          {/* Stock Remaining Label */}
+          {product.stock && Number(product.stock) > 0 && (
+            <div className="mt-2 mb-2">
+              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${Number(product.stock) <= 3
+                ? 'bg-red-100 text-red-700 border border-red-300'
+                : Number(product.stock) <= 10
+                  ? 'bg-orange-100 text-orange-700 border border-orange-300'
+                  : 'bg-green-100 text-green-700 border border-green-300'
+                }`}>
+                {Number(product.stock)} {Number(product.stock) === 1 ? 'item' : 'items'} remaining
+              </span>
+            </div>
+          )}
+
           {/* Add to Bag Button */}
           {showAddToBag && (
             <button

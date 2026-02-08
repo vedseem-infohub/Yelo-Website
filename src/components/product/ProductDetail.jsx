@@ -1088,25 +1088,19 @@ const ProductDetail = ({ product }) => {
 
         {/* Quantity Selection & Stock Remaining */}
         <div className="border-t border-yellow-100 pt-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <h3 className="text-sm font-semibold text-gray-800 uppercase tracking-wide flex items-center gap-2">
-                <span className="w-1 h-4 bg-yellow-500 rounded-full"></span>
-                Quantity
-              </h3>
-              {/* Stock Remaining Label */}
-              {stock > 0 && (
-                <span className={`px-3 py-1 rounded-full text-xs font-bold ${stock <= 3
-                  ? 'bg-red-100 text-red-700 border border-red-300'
-                  : stock <= 10
-                    ? 'bg-orange-100 text-orange-700 border border-orange-300'
-                    : 'bg-green-100 text-green-700 border border-green-300'
-                  }`}>
-                  {stock} {stock === 1 ? 'item' : 'items'} remaining
-                </span>
-              )}
+          {/* Stock Remaining Label - Moved up */}
+          {stock > 0 && (
+            <div className="mb-3">
+              <span className={`px-3 py-1 rounded-full text-xs font-bold ${stock <= 3
+                ? 'bg-red-100 text-red-700 border border-red-300'
+                : stock <= 10
+                  ? 'bg-orange-100 text-orange-700 border border-orange-300'
+                  : 'bg-green-100 text-green-700 border border-green-300'
+                }`}>
+                {stock} {stock === 1 ? 'item' : 'items'} remaining
+              </span>
             </div>
-          </div>
+          )}
 
           <div className="flex items-center gap-3">
             <div className="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">

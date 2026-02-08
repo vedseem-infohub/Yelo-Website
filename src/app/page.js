@@ -23,7 +23,7 @@ function page() {
         <QuickAccess />
         <PriceSpot />
         <SuperSavers />
-        <FeaturedBrands />
+        {/* <FeaturedBrands /> */}
         <TrendingProducts />
         <WhyShopWithUs />
         <SocialProof />
